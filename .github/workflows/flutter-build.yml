@@ -540,11 +540,13 @@ jobs:
             export VCPKG_ROOT=/opt/artifacts/vcpkg
             if [[ "${{ matrix.job.arch }}" == "aarch64" ]]; then
               export JOBS="--jobs 3"
+              export SPARSE_REGISTRY="-Z sparse-registry"
             else
               export JOBS=""
+              export SPARSE_REGISTRY=""
             fi
             echo $JOBS
-            cargo build --lib $JOBS --features hwcodec,flutter --release
+            cargo build --lib $JOBS $SPARSE_REGISTRY --features hwcodec,flutter --release
             rm -rf target/release/deps target/release/build
             rm -rf ~/.cargo
 
