@@ -429,7 +429,8 @@ jobs:
       - name: Install aarch64 toolchain
         if: matrix.job.arch == 'aarch64'
         run: |
-          apt-get install -y gcc-9-aarch64-linux-gnu g++-9-aarch64-linux-gnu
+          sudo apt-get update -y
+          sudo apt-get install -y gcc-9-aarch64-linux-gnu g++-9-aarch64-linux-gnu
         shell: bash
 
       - name: Install vcpkg dependencies
