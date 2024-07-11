@@ -426,6 +426,12 @@ jobs:
           vcpkgDirectory: /opt/artifacts/vcpkg
           vcpkgGitCommitId: ${{ env.VCPKG_COMMIT_ID }}
 
+      - name: Install aarch64 toolchain
+        if: matrix.job.arch == 'aarch64'
+        run: |
+          apt-get install -y gcc-9-aarch64-linux-gnu g++-9-aarch64-linux-gnu
+        shell: bash
+
       - name: Install vcpkg dependencies
         if: matrix.job.arch == 'x86_64' || env.UPLOAD_ARTIFACT == 'true'
         run: |
