@@ -430,7 +430,7 @@ jobs:
         if: matrix.job.arch == 'aarch64'
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+          sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu nasm yasm
           mkdir /tmp/custom-triplets
           echo "set(VCPKG_TARGET_ARCHITECTURE arm64)" > /tmp/custom-triplets/arm64-linux.cmake
           echo "set(VCPKG_CRT_LINKAGE dynamic)" >> /tmp/custom-triplets/arm64-linux.cmake
@@ -447,7 +447,7 @@ jobs:
         shell: bash
 
       - name: Install vcpkg dependencies (ARM64)
-        if: matrix.job.arch != 'x86_64'
+        if: matrix.job.arch == 'aarch64'
         run: |
           $VCPKG_ROOT/vcpkg install --triplet ${{ matrix.job.vcpkg-triplet }} --x-install-root="$VCPKG_ROOT/installed" --overlay-triplets=/tmp/custom-triplets
         shell: bash
