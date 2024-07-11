@@ -430,11 +430,30 @@ jobs:
         if: matrix.job.arch == 'aarch64'
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y gcc-9-aarch64-linux-gnu g++-9-aarch64-linux-gnu
+          sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+          mkdir /tmp/custom-triplets
+          echo "set(VCPKG_TARGET_ARCHITECTURE arm64)" > /tmp/custom-triplets/arm64-linux.cmake
+          echo "set(VCPKG_CRT_LINKAGE dynamic)" >> /tmp/custom-triplets/arm64-linux.cmake
+          echo "set(VCPKG_LIBRARY_LINKAGE static)" >> /tmp/custom-triplets/arm64-linux.cmake
+          echo "set(VCPKG_CMAKE_SYSTEM_NAME Linux)" >> /tmp/custom-triplets/arm64-linux.cmake
+          echo "set(CMAKE_C_COMPILER aarch64-linux-gnu-gcc)" >> /tmp/custom-triplets/arm64-linux.cmake
+          echo "set(CMAKE_CXX_COMPILER aarch64-linux-gnu-g++)" >> /tmp/custom-triplets/arm64-linux.cmake
+          echo "set(CMAKE_LINKER aarch64-linux-gnu-ld)" >> /tmp/custom-triplets/arm64-linux.cmake
+          echo "set(CMAKE_AR aarch64-linux-gnu-ar)" >> /tmp/custom-triplets/arm64-linux.cmake
+          echo "set(CMAKE_NM aarch64-linux-gnu-nm)" >> /tmp/custom-triplets/arm64-linux.cmake
+          echo "set(CMAKE_OBJCOPY aarch64-linux-gnu-objcopy)" >> /tmp/custom-triplets/arm64-linux.cmake
+          echo "set(CMAKE_OBJDUMP aarch64-linux-gnu-objdump)" >> /tmp/custom-triplets/arm64-linux.cmake
+          echo "set(CMAKE_RANLIB aarch64-linux-gnu-ranlib)" >> /tmp/custom-triplets/arm64-linux.cmake
+        shell: bash
+
+      - name: Install vcpkg dependencies (ARM64)
+        if: matrix.job.arch != 'x86_64'
+        run: |
+          $VCPKG_ROOT/vcpkg install --triplet ${{ matrix.job.vcpkg-triplet }} --x-install-root="$VCPKG_ROOT/installed" --overlay-triplets=/tmp/custom-triplets
         shell: bash
 
       - name: Install vcpkg dependencies
-        if: matrix.job.arch == 'x86_64' || env.UPLOAD_ARTIFACT == 'true'
+        if: matrix.job.arch == 'x86_64'
         run: |
           $VCPKG_ROOT/vcpkg install --triplet ${{ matrix.job.vcpkg-triplet }} --x-install-root="$VCPKG_ROOT/installed"
         shell: bash
