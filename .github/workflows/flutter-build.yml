@@ -372,7 +372,6 @@ jobs:
             core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
       - name: Maximize build space
-        if: ${{ matrix.job.arch == 'x86_64' }}
         run: |
           sudo rm -rf /opt/ghc
           sudo rm -rf /usr/local/lib/android
@@ -384,7 +383,6 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set Swap Space
-        if: ${{ matrix.job.arch == 'x86_64' }}
         uses: pierotofy/set-swap-space@master
         with:
           swap-size-gb: 12
@@ -430,7 +428,7 @@ jobs:
         if: matrix.job.arch == 'aarch64'
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu nasm yasm
+          sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
           mkdir /tmp/custom-triplets
           echo "set(VCPKG_TARGET_ARCHITECTURE arm64)" > /tmp/custom-triplets/arm64-linux.cmake
           echo "set(VCPKG_CRT_LINKAGE dynamic)" >> /tmp/custom-triplets/arm64-linux.cmake
