@@ -661,4 +661,4 @@ jobs:
         uses: actions/upload-artifact@master
         with:
           name: rustdesk-unsigned-windows-TGZ-${{ matrix.job.arch }}
-          path: ./SignOutput/rustdesk-${{ env.VERSION }}-${{ matrix.job.arch }}.AppImage
+          path: ./appimage/rustdesk-${{ env.VERSION }}-${{ matrix.job.arch }}.AppImage
