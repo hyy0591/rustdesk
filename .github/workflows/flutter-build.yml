@@ -548,11 +548,11 @@ jobs:
             if [[ "${{ matrix.job.arch }}" == "aarch64" ]]; then
               export JOBS="--jobs 3"
               export CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse
+              echo $CARGO_REGISTRIES_CRATES_IO_PROTOCOL
             else
               export JOBS=""
             fi
             echo $JOBS
-            echo $CARGO_REGISTRIES_CRATES_IO_PROTOCOL
             cargo build --lib $JOBS --features hwcodec,flutter --release
             rm -rf target/release/deps target/release/build
             rm -rf ~/.cargo
