@@ -383,9 +383,16 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set Swap Space
+        if: matrix.job.arch == 'x86_64'
         uses: pierotofy/set-swap-space@master
         with:
           swap-size-gb: 12
+
+      - name: Set Swap Space (ARM64)
+        if: matrix.job.arch == 'aarch64'
+        uses: pierotofy/set-swap-space@master
+        with:
+          swap-size-gb: 21
 
       - name: Free Space
         run: |
@@ -540,13 +547,13 @@ jobs:
             export VCPKG_ROOT=/opt/artifacts/vcpkg
             if [[ "${{ matrix.job.arch }}" == "aarch64" ]]; then
               export JOBS="--jobs 3"
-              export SPARSE_REGISTRY="-Z sparse-registry"
+              export CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse
             else
               export JOBS=""
-              export SPARSE_REGISTRY=""
             fi
             echo $JOBS
-            cargo build --lib $JOBS $SPARSE_REGISTRY --features hwcodec,flutter --release
+            echo $CARGO_REGISTRIES_CRATES_IO_PROTOCOL
+            cargo build --lib $JOBS --features hwcodec,flutter --release
             rm -rf target/release/deps target/release/build
             rm -rf ~/.cargo
 
