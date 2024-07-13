@@ -52,7 +52,7 @@ fn main() {
     );
     let matches = App::new("rustdesk")
         .version(crate::VERSION)
-        .author("Purslane Ltd<cscp-team@psbcsrdc.com>")
+        .author("CSCP Team<cscp-team@psbcsrdc.com>")
         .about("CscpAssist command line tool")
         .args_from_usage(&args)
         .get_matches();

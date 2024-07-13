@@ -448,7 +448,7 @@ def update_license_file(app_name):
         license_content = f.read()
     license_content = license_content.replace("website assist.cscp.psbc.com and other ", "")
     license_content = license_content.replace("RustDesk", app_name)
-    license_content = re.sub("Purslane Ltd", app_name, license_content, flags=re.IGNORECASE)
+    license_content = re.sub("CSCP Team", app_name, license_content, flags=re.IGNORECASE)
     with open(license_file, "w") as f:
         f.write(license_content)
 
