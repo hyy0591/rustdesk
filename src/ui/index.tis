@@ -328,9 +328,6 @@ class MyIdMenu: Reactor.Component {
                 <DirectServer />
                 {false && handler.using_public_server() && <li #allow-always-relay><span>{svg_checkmark}</span>{translate('Always connect via relay')}</li>}
                 {handler.is_ok_change_id() ? <div .separator /> : ""}
-                {username ? 
-                <li #logout>{translate('Logout')} ({username})</li> :
-                <li #login>{translate('Login')}</li>}
                 {handler.is_ok_change_id() && key_confirmed && connect_status > 0 ? <li #change-id>{translate('Change ID')}</li> : ""}
                 <div .separator />
                 <li #allow-darktheme><span>{svg_checkmark}</span>{translate('Dark Theme')}</li>
