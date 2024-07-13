@@ -63,7 +63,7 @@ def make_parser():
         "-c", "--custom", action="store_true", help="Is custom client", default=False
     )
     parser.add_argument(
-        "--app-name", type=str, default="RustDesk", help="The app name."
+        "--app-name", type=str, default="CscpAssist", help="The app name."
     )
     parser.add_argument(
         "-v", "--version", type=str, default="", help="The app version."
@@ -446,7 +446,7 @@ def update_license_file(app_name):
     license_file = Path(sys.argv[0]).parent.joinpath("Package/License.rtf")
     with open(license_file, "r") as f:
         license_content = f.read()
-    license_content = license_content.replace("website rustdesk.com and other ", "")
+    license_content = license_content.replace("website assist.cscp.psbc.com and other ", "")
     license_content = license_content.replace("RustDesk", app_name)
     license_content = re.sub("Purslane Ltd", app_name, license_content, flags=re.IGNORECASE)
     with open(license_file, "w") as f:
