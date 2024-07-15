@@ -223,7 +223,7 @@ jobs:
             export VCPKG_ROOT=/opt/artifacts/vcpkg
             export ARCH=${{ matrix.job.arch }}
             export CARGO_INCREMENTAL=0
-            cargo build --features inline $JOBS --release --bins --jobs 1
+            cargo build --features inline $JOBS --release --bins
             # package
             mkdir -p ./Release
             mv ./target/release/rustdesk ./Release/rustdesk
