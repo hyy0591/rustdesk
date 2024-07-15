@@ -9,7 +9,7 @@ on:
       - 'v[0-9]+.[0-9]+.[0-9]+-[0-9]+'
       - '[0-9]+.[0-9]+.[0-9]+-[0-9]+'
     branches:
-      - 'customized_test2'
+      - 'customized_test3'
 
 jobs:
   run-flutter-tag-build:
