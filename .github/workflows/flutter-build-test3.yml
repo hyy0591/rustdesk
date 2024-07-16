@@ -209,9 +209,13 @@ jobs:
 
             cat ~/.cargo/config
             if [[ "${{ matrix.job.arch }}" == "aarch64" ]]; then
+              export JOBS="--jobs 3"
               export CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse
               echo $CARGO_REGISTRIES_CRATES_IO_PROTOCOL
+            else
+              export JOBS="--jobs 1"
             fi
+            echo $JOBS
 
             # build
             pushd /workspace
@@ -219,7 +223,7 @@ jobs:
             export VCPKG_ROOT=/opt/artifacts/vcpkg
             export ARCH=${{ matrix.job.arch }}
             export CARGO_INCREMENTAL=0
-            cargo build --features inline --release --bins
+            cargo build $JOBS --features inline --release --bins
             # package
             mkdir -p ./Release
             mv ./target/release/rustdesk ./Release/rustdesk
