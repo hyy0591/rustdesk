@@ -44,6 +44,8 @@ AppDir:
     - sourceline: deb http://archive.ubuntu.com/ubuntu/ bionic-security main restricted
         universe multiverse
       key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3b4fe6acc0b21f32'
+    - sourceline: deb http://ppa.launchpad.net/pipewire-debian/pipewire-upstream/ubuntu bionic main
+      key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x25088a0359807596'
     include:
     - libc6:amd64
     - libgtk-3-0
