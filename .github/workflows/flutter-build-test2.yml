@@ -368,4 +368,4 @@ jobs:
         uses: actions/upload-artifact@master
         with:
           name: rustdesk-unsigned-linux-APPIMAGE-${{ matrix.job.arch }}
-          path: ./appimage/rustdesk-${{ env.VERSION }}-${{ matrix.job.arch }}.AppImage
+          path: ./appimage/cscpassist-${{ env.VERSION }}-${{ matrix.job.arch }}.AppImage
