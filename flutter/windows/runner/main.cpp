@@ -27,11 +27,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
     std::cout << "Failed to load libcscpassist.dll." << std::endl;
     return EXIT_FAILURE;
   }
-  FUNC_RUSTDESK_CORE_MAIN rustdesk_core_main =
-      (FUNC_RUSTDESK_CORE_MAIN)GetProcAddress(hInstance, "rustdesk_core_main_args");
-  if (!rustdesk_core_main)
+  FUNC_RUSTDESK_CORE_MAIN cscpassist_core_main =
+      (FUNC_RUSTDESK_CORE_MAIN)GetProcAddress(hInstance, "cscpassist_core_main_args");
+  if (!cscpassist_core_main)
   {
-    std::cout << "Failed to get rustdesk_core_main." << std::endl;
+    std::cout << "Failed to get cscpassist_core_main." << std::endl;
     return EXIT_FAILURE;
   }
   FUNC_RUSTDESK_FREE_ARGS free_c_args =
@@ -49,7 +49,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   }
 
   int args_len = 0;
-  char** c_args = rustdesk_core_main(&args_len);
+  char** c_args = cscpassist_core_main(&args_len);
   if (!c_args)
   {
     std::string args_str = "";

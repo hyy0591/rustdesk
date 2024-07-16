@@ -7,7 +7,7 @@ bool gIsConnectionManager = false;
 
 void print_help_install_pkg(const char* so);
 
-bool flutter_rustdesk_core_main() {
+bool flutter_cscpassist_core_main() {
    void* libcscpassist = dlopen(RUSTDESK_LIB_PATH, RTLD_LAZY);
    if (!libcscpassist) {
       fprintf(stderr,"Failed to load \"libcscpassist.so\"\n");
@@ -24,17 +24,17 @@ bool flutter_rustdesk_core_main() {
       }
      return false;
    }
-   auto core_main = (RustDeskCoreMain) dlsym(libcscpassist,"rustdesk_core_main");
+   auto core_main = (RustDeskCoreMain) dlsym(libcscpassist,"cscpassist_core_main");
    char* error;
    if ((error = dlerror()) != nullptr) {
-       fprintf(stderr, "Program entry \"rustdesk_core_main\" is not found: %s\n", error);
+       fprintf(stderr, "Program entry \"cscpassist_core_main\" is not found: %s\n", error);
        return false;
    }
    return core_main();
 }
 
 int main(int argc, char** argv) {
-  if (!flutter_rustdesk_core_main()) {
+  if (!flutter_cscpassist_core_main()) {
       return 0;
   }
   for (int i = 0; i < argc; i++) {
