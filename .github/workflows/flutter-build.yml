@@ -382,6 +382,20 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v3
 
+      - name: Add Custom Font Load Code (ARM64)
+        if: matrix.job.arch == 'aarch64'
+        run: |
+          ls /home/runner/work
+          ls /home/runner/work/rustdesk
+          ls /home/runner/work/rustdesk/rustdesk
+          ls /home/runner/work/rustdesk/rustdesk/flutter
+          ls /home/runner/work/rustdesk/rustdesk/flutter/lib
+          sed -i 's/WidgetsFlutterBinding.ensureInitialized();/WidgetsFlutterBinding.ensureInitialized();\n  final result = await Process.run("fc-match", ["-f", r"'\''%{file}\\n'\''"]);\n  if (result.exitCode == 0) {\n    String fontPath = result.stdout.trim();\n    print("Default font path: $fontPath");\n    var fontFile = File(fontPath);\n    if (!fontFile.existsSync()) {\n      print("Font file is not exist");\n    } else {\n      Future<ByteData> readFont() async {\n        ByteData byteData = (await fontFile.readAsBytes()).buffer.asByteData();\n        return byteData;\n      }\n      final fontLoader = FontLoader("SystemDefaultFont");\n      fontLoader.addFont(readFont());\n      await fontLoader.load();\n    }\n  } else {\n    print("Error: ${result.stderr}");\n  }\n/' /home/runner/work/rustdesk/rustdesk/flutter/lib/main.dart
+          sed -i 's/useMaterial3: false,/useMaterial3: false,\n    fontFamily: '\''SystemDefaultFont'\'',/' /home/runner/work/rustdesk/rustdesk/flutter/lib/common.dart
+          sed -i 's/WorkSans/SystemDefaultFont/' /home/runner/work/rustdesk/rustdesk/flutter/lib/desktop/pages/connection_page.dart
+          sed -i 's/WorkSans/SystemDefaultFont/' /home/runner/work/rustdesk/rustdesk/flutter/lib/common/widgets/overlay.dart
+          sed -i 's/TextStyle(/TextStyle(fontFamily: '\''SystemDefaultFont'\'',/' /home/runner/work/rustdesk/rustdesk/flutter/lib/common.dart
+
       - name: Set Swap Space
         if: matrix.job.arch == 'x86_64'
         uses: pierotofy/set-swap-space@master
