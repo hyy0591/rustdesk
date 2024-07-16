@@ -80,6 +80,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Add Custom Font Load Code (ARM64)
+        if: matrix.job.arch == 'aarch64'
         run: |
           ls /home/runner/work
           ls /home/runner/work/rustdesk
