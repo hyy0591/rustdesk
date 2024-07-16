@@ -15,11 +15,11 @@ script:
 AppDir:
   path: ./AppDir
   app_info:
-    id: rustdesk
-    name: rustdesk
+    id: cscpassist
+    name: cscpassist
     icon: rustdesk
     version: 1.2.6
-    exec: usr/lib/rustdesk/rustdesk
+    exec: usr/lib/cscpassist/cscpassist
     exec_args: $@
   apt:
     arch:
