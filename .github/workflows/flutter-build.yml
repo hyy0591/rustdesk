@@ -169,10 +169,10 @@ jobs:
           sed -i '/dpiAware/d' res/manifest.xml
           pushd ./libs/portable
           pip3 install -r requirements.txt
-          python3 ./generate.py -f ../../rustdesk/ -o . -e ../../rustdesk/rustdesk.exe
+          python3 ./generate.py -f ../../rustdesk/ -o . -e ../../rustdesk/cscpassist.exe
           popd
           mkdir -p ./SignOutput
-          mv ./target/release/rustdesk-portable-packer.exe ./SignOutput/rustdesk-${{ env.VERSION }}-${{ matrix.job.arch }}.exe
+          mv ./target/release/cscpassist-portable-packer.exe ./SignOutput/rustdesk-${{ env.VERSION }}-${{ matrix.job.arch }}.exe
 
       - name: Add MSBuild to PATH
         uses: microsoft/setup-msbuild@v2
@@ -268,7 +268,7 @@ jobs:
           sed -i 's/branch = "dyn"/branch = "dyn_x86"/g' ./Cargo.toml
           cargo build --features inline,vram,hwcodec --release --bins
           mkdir -p ./Release
-          mv ./target/release/rustdesk.exe ./Release/rustdesk.exe
+          mv ./target/release/cscpassist.exe ./Release/cscpassist.exe
           curl -LJ -o ./Release/sciter.dll https://github.com/c-smile/sciter-sdk/raw/master/bin.win/x32/sciter.dll
           echo "output_folder=./Release" >> $GITHUB_OUTPUT
           curl -LJ -o ./usbmmidd_v2.zip https://github.com/rustdesk-org/rdev/releases/download/usbmmidd_v2/usbmmidd_v2.zip
@@ -308,10 +308,10 @@ jobs:
           sed -i '/dpiAware/d' res/manifest.xml
           pushd ./libs/portable
           pip3 install -r requirements.txt
-          python3 ./generate.py -f ../../Release/ -o . -e ../../Release/rustdesk.exe
+          python3 ./generate.py -f ../../Release/ -o . -e ../../Release/cscpassist.exe
           popd
           mkdir -p ./SignOutput
-          mv ./target/release/rustdesk-portable-packer.exe ./SignOutput/rustdesk-${{ env.VERSION }}-${{ matrix.job.arch }}-sciter.exe
+          mv ./target/release/cscpassist-portable-packer.exe ./SignOutput/rustdesk-${{ env.VERSION }}-${{ matrix.job.arch }}-sciter.exe
           mv ./Release ./rustdesk
           tar czf rustdesk-${{ env.VERSION }}-${{ matrix.job.arch }}.tar.gz rustdesk
 
@@ -333,7 +333,7 @@ jobs:
         uses: actions/upload-artifact@master
         with:
           name: rustdesk-unsigned-windows-TGZ-${{ matrix.job.arch }}
-          path: ./SignOutput/rustdesk-${{ env.VERSION }}-${{ matrix.job.arch }}.tar.gz
+          path: ./rustdesk-${{ env.VERSION }}-${{ matrix.job.arch }}.tar.gz
 
   generate-bridge-linux:
     uses: ./.github/workflows/bridge.yml
@@ -918,18 +918,18 @@ jobs:
           # run appimage-builder
           pushd appimage
           sudo appimage-builder --skip-tests --recipe ./AppImageBuilder-${{ matrix.job.arch }}.yml
-          mv ./appimage/rustdesk-${{ env.VERSION }}-${{ matrix.job.arch }}.AppImage ./appimage/rustdesk-${{ env.VERSION }}-${{ matrix.job.arch }}-sciter.AppImage
+          mv ./appimage/rustdesk-${{ env.VERSION }}-${{ matrix.job.arch }}.AppImage ./appimage/cscpassist-${{ env.VERSION }}-${{ matrix.job.arch }}-sciter.AppImage
 
       - name: Upload AppImage
         if: env.UPLOAD_ARTIFACT == 'true' && matrix.job.type != 'sciter'
         uses: actions/upload-artifact@master
         with:
           name: rustdesk-unsigned-linux-APPIMAGE-${{ matrix.job.arch }}
-          path: ./appimage/rustdesk-${{ env.VERSION }}-${{ matrix.job.arch }}.AppImage
+          path: ./appimage/cscpassist-${{ env.VERSION }}-${{ matrix.job.arch }}.AppImage
 
       - name: Upload AppImage (Sciter)
         if: env.UPLOAD_ARTIFACT == 'true' && matrix.job.type == 'sciter'
         uses: actions/upload-artifact@master
         with:
           name: rustdesk-unsigned-linux-APPIMAGE-${{ matrix.job.arch }}
-          path: ./appimage/rustdesk-${{ env.VERSION }}-${{ matrix.job.arch }}-sciter.AppImage
+          path: ./appimage/cscpassist-${{ env.VERSION }}-${{ matrix.job.arch }}-sciter.AppImage
