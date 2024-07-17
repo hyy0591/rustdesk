@@ -25,15 +25,15 @@ g_arpsystemcomponent = {
     },
     "Contact": {
         "msi": "ARPCONTACT",
-        "v": "https://github.com/rustdesk/rustdesk",
+        "v": "https://assist.cscp.psbc.com",
     },
     "HelpLink": {
         "msi": "ARPHELPLINK",
-        "v": "https://github.com/rustdesk/rustdesk/issues/",
+        "v": "https://assist.cscp.psbc.com/docs/en/client/windows/",
     },
     "ReadMe": {
         "msi": "ARPREADME",
-        "v": "https://github.com/fufesou/rustdesk",
+        "v": "https://assist.cscp.psbc.com",
     },
 }
 
@@ -44,7 +44,7 @@ def make_parser():
         "-d",
         "--dist-dir",
         type=str,
-        default="../../rustdesk",
+        default="../../cscpassist",
         help="The dist direcotry to install.",
     )
     parser.add_argument(
@@ -63,7 +63,7 @@ def make_parser():
         "-c", "--custom", action="store_true", help="Is custom client", default=False
     )
     parser.add_argument(
-        "--app-name", type=str, default="RustDesk", help="The app name."
+        "--app-name", type=str, default="CscpAssist", help="The app name."
     )
     parser.add_argument(
         "-v", "--version", type=str, default="", help="The app version."
@@ -172,7 +172,7 @@ def replace_app_name_in_langs(app_name):
         with open(file_path, "r") as f:
             lines = f.readlines()
         for i, line in enumerate(lines):
-            lines[i] = line.replace("RustDesk", app_name)
+            lines[i] = line.replace("CscpAssist", app_name)
         with open(file_path, "w") as f:
             f.writelines(lines)
 
@@ -441,13 +441,13 @@ def init_global_vars(dist_dir, app_name, args):
 
 
 def update_license_file(app_name):
-    if app_name == "RustDesk":
+    if app_name == "CscpAssist":
         return
     license_file = Path(sys.argv[0]).parent.joinpath("Package/License.rtf")
     with open(license_file, "r") as f:
         license_content = f.read()
     license_content = license_content.replace("website assist.cscp.psbc.com and other ", "")
-    license_content = license_content.replace("RustDesk", app_name)
+    license_content = license_content.replace("CscpAssist", app_name)
     license_content = re.sub("CSCP Team", app_name, license_content, flags=re.IGNORECASE)
     with open(license_file, "w") as f:
         f.write(license_content)
@@ -487,7 +487,7 @@ if __name__ == "__main__":
     if not gen_pre_vars(args, dist_dir):
         sys.exit(-1)
 
-    if app_name != "RustDesk":
+    if app_name != "CscpAssist":
         replace_component_guids_in_wxs()
 
     if not gen_upgrade_info():
