@@ -1,15 +1,15 @@
 [package]
-name = "rustdesk"
+name = "cscpassist"
 version = "1.2.6"
-authors = ["rustdesk <cscp-team@psbcsrdc.com>"]
+authors = ["cscpassist <cscp-team@psbcsrdc.com>"]
 edition = "2021"
 build= "build.rs"
-description = "RustDesk Remote Desktop"
-default-run = "rustdesk"
+description = "CscpAssist Remote Desktop"
+default-run = "cscpassist"
 rust-version = "1.75"
 
 [lib]
-name = "librustdesk"
+name = "libcscpassist"
 crate-type = ["cdylib", "staticlib", "rlib"]
 
 [[bin]]
@@ -173,7 +173,7 @@ exclude = ["vdi/host", "examples/custom_plugin"]
 LegalCopyright = "Copyright © 2024 CSCP Team. All rights reserved."
 ProductName = "RustDesk"
 FileDescription = "RustDesk Remote Desktop"
-OriginalFilename = "rustdesk.exe"
+OriginalFilename = "cscpassist.exe"
 
 [target.'cfg(target_os="windows")'.build-dependencies]
 winres = "0.1"
@@ -189,7 +189,7 @@ hound = "3.5"
 
 [package.metadata.bundle]
 name = "RustDesk"
-identifier = "com.carriez.rustdesk"
+identifier = "com.psbc.cscp.assist"
 icon = ["res/32x32.png", "res/128x128.png", "res/128x128@2x.png"]
 osx_minimum_system_version = "10.14"
 
