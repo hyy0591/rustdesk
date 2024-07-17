@@ -10,7 +10,7 @@ const BIN_DATA: &[u8] = include_bytes!("../data.bin");
 const BIN_DATA: &[u8] = &[];
 // 4bytes
 const LENGTH: usize = 4;
-const IDENTIFIER_LENGTH: usize = 8;
+const IDENTIFIER_LENGTH: usize = 10;
 const MD5_LENGTH: usize = 32;
 const BUF_SIZE: usize = 4096;
 
