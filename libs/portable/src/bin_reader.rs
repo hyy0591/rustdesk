@@ -10,7 +10,7 @@ const BIN_DATA: &[u8] = include_bytes!("../data.bin");
 const BIN_DATA: &[u8] = &[];
 // 4bytes
 const LENGTH: usize = 4;
-const IDENTIFIER_LENGTH: usize = 8;
+const IDENTIFIER_LENGTH: usize = 10;
 const MD5_LENGTH: usize = 32;
 const BUF_SIZE: usize = 4096;
 
@@ -73,13 +73,13 @@ impl BinaryReader {
         let mut parsed = vec![];
         assert!(BIN_DATA.len() > IDENTIFIER_LENGTH, "bin data invalid!");
         let mut iden = String::from_utf8_lossy(&BIN_DATA[base..base + IDENTIFIER_LENGTH]);
-        if iden != "rustdesk" {
+        if iden != "cscpassist" {
             panic!("bin file is not valid!");
         }
         base += IDENTIFIER_LENGTH;
         loop {
             iden = String::from_utf8_lossy(&BIN_DATA[base..base + IDENTIFIER_LENGTH]);
-            if iden == "rustdesk" {
+            if iden == "cscpassist" {
                 base += IDENTIFIER_LENGTH;
                 break;
             }
