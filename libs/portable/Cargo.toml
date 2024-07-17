@@ -1,5 +1,5 @@
 [package]
-name = "rustdesk-portable-packer"
+name = "cscpassist-portable-packer"
 version = "1.2.6"
 edition = "2021"
 description = "CscpAssist Remote Desktop"
@@ -17,7 +17,7 @@ winapi = { version = "0.3", features = ["winbase"] }
 [package.metadata.winres]
 LegalCopyright = "Copyright © 2024 CSCP Team. All rights reserved."
 ProductName = "CscpAssist"
-OriginalFilename = "rustdesk.exe"
+OriginalFilename = "cscpassist.exe"
 FileDescription = "CscpAssist Remote Desktop"
 #ProductVersion = ""
 
