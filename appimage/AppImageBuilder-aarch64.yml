@@ -28,14 +28,14 @@ AppDir:
     sources:
     - sourceline: deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ bionic main restricted universe multiverse
       key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3b4fe6acc0b21f32'
-    - sourceline: deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ bionic-updates main restricted universe multiverse
-      key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3b4fe6acc0b21f32'
-    - sourceline: deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ bionic-backports main restricted
-        universe multiverse
-      key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3b4fe6acc0b21f32'
-    - sourceline: deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ bionic-security main restricted
-        universe multiverse
-      key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3b4fe6acc0b21f32'
+    #- sourceline: deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ bionic-updates main restricted universe multiverse
+    #  key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3b4fe6acc0b21f32'
+    #- sourceline: deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ bionic-backports main restricted
+    #    universe multiverse
+    #  key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3b4fe6acc0b21f32'
+    #- sourceline: deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ bionic-security main restricted
+    #    universe multiverse
+    #  key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3b4fe6acc0b21f32'
     - sourceline: deb [arch=arm64] http://ppa.launchpad.net/pipewire-debian/pipewire-upstream/ubuntu bionic main
       key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x25088a0359807596'
     include:
