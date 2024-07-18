@@ -903,7 +903,7 @@ jobs:
           # run appimage-builder
           pushd appimage
           sudo appimage-builder --skip-tests --recipe ./AppImageBuilder-${{ matrix.job.arch }}.yml
-        continue_on_error: true
+        continue-on-error: true
 
       - name: Build appimage package (Sciter)
         if: matrix.job.type == 'sciter'
@@ -925,7 +925,7 @@ jobs:
           sudo appimage-builder --skip-tests --recipe ./AppImageBuilder-${{ matrix.job.arch }}.yml
           ls ./appimage
           mv ./appimage/cscpassist-${{ env.VERSION }}-${{ matrix.job.arch }}.AppImage ./appimage/cscpassist-${{ env.VERSION }}-${{ matrix.job.arch }}-sciter.AppImage
-        continue_on_error: true
+        continue-on-error: true
 
       - name: Setup Debug Session
         uses: csexton/debugger-action@master
