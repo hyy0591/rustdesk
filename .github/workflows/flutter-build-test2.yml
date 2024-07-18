@@ -111,8 +111,8 @@ jobs:
           df -h
           free -m
 
-      - name: Setup Debug Session
-        uses: csexton/debugger-action@master
+      #- name: Setup Debug Session
+      #  uses: csexton/debugger-action@master
 
       - name: Install toolchain
         if: matrix.job.arch == 'x86_64'
@@ -197,10 +197,9 @@ jobs:
           echo "set(CMAKE_OBJDUMP aarch64-linux-gnu-objdump)" >> /tmp/custom-triplets/arm64-linux.cmake
           echo "set(CMAKE_RANLIB aarch64-linux-gnu-ranlib)" >> /tmp/custom-triplets/arm64-linux.cmake
         shell: bash
-        continue-on-error: true
 
-      - name: Setup Debug Session
-        uses: csexton/debugger-action@master
+      #- name: Setup Debug Session
+      #  uses: csexton/debugger-action@master
 
       - name: Export GitHub Actions cache environment variables
         uses: actions/github-script@v6
@@ -246,17 +245,15 @@ jobs:
         run: |
           $VCPKG_ROOT/vcpkg install --triplet ${{ matrix.job.vcpkg-triplet }} --x-install-root="$VCPKG_ROOT/installed" --overlay-triplets=/tmp/custom-triplets
         shell: bash
-        continue-on-error: true
 
       - name: Install vcpkg dependencies
         if: matrix.job.arch == 'x86_64'
         run: |
           $VCPKG_ROOT/vcpkg install --triplet ${{ matrix.job.vcpkg-triplet }} --x-install-root="$VCPKG_ROOT/installed"
         shell: bash
-        continue-on-error: true
 
-      - name: Setup Debug Session
-        uses: csexton/debugger-action@master
+      #- name: Setup Debug Session
+      #  uses: csexton/debugger-action@master
 
       - name: Restore bridge files
         if: matrix.job.arch == 'x86_64' || env.UPLOAD_ARTIFACT == 'true'
@@ -287,10 +284,11 @@ jobs:
             #echo "deb http://archive.ubuntu.com/ubuntu/ bionic-updates universe" | tee -a /etc/apt/sources.list
             echo "deb http://archive.ubuntu.com/ubuntu/ bionic multiverse" | tee -a /etc/apt/sources.list
             #echo "deb http://archive.ubuntu.com/ubuntu/ bionic-updates multiverse" | tee -a /etc/apt/sources.list
-            echo "deb http://archive.ubuntu.com/ubuntu/ bionic-backports main restricted universe multiverse" | tee -a /etc/apt/sources.list
+            #echo "deb http://archive.ubuntu.com/ubuntu/ bionic-backports main restricted universe multiverse" | tee -a /etc/apt/sources.list
             #echo "deb http://security.ubuntu.com/ubuntu bionic-security main restricted" | tee -a /etc/apt/sources.list
             #echo "deb http://security.ubuntu.com/ubuntu bionic-security universe" | tee -a /etc/apt/sources.list
             #echo "deb http://security.ubuntu.com/ubuntu bionic-security multiverse" | tee -a /etc/apt/sources.list
+            rm /etc/apt/sources.list/*
             apt-get clean
             apt-get autoclean
             apt-get autoremove -y
@@ -306,7 +304,6 @@ jobs:
                g++ \
                libappindicator3-dev \
                libasound2-dev \
-               libclang-10-dev \
                libgstreamer1.0-dev \
                libgstreamer-plugins-base1.0-dev \
                libgtk-3-dev \
@@ -319,7 +316,7 @@ jobs:
                libxcb-xfixes0-dev \
                libxdo-dev \
                libxfixes-dev \
-               llvm-10-dev \
+               nasm \
                yasm \
                ninja-build \
                pkg-config \
@@ -328,6 +325,9 @@ jobs:
                unzip \
                wget \
                xz-utils
+            #apt-get -y \
+            #   libclang-10-dev \
+            #   llvm-10-dev
             # we have libopus compiled by us.
             apt-get remove -y libopus-dev || true
             # output devs
