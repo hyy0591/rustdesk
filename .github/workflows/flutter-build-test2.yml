@@ -125,7 +125,7 @@ jobs:
           sudo apt-get autoremove -y
           ls /etc/apt
           cat /etc/apt/sources.list
-          ls /etc/apt/source.list.d
+          ls /etc/apt/sources.list.d
           echo "deb http://archive.ubuntu.com/ubuntu/ bionic main restricted" | sudo tee /etc/apt/sources.list
           echo "deb http://archive.ubuntu.com/ubuntu/ bionic-updates main restricted" | sudo tee -a /etc/apt/sources.list
           echo "deb http://archive.ubuntu.com/ubuntu/ bionic universe" | sudo tee -a /etc/apt/sources.list
@@ -137,8 +137,8 @@ jobs:
           echo "deb http://security.ubuntu.com/ubuntu bionic-security universe" | sudo tee -a /etc/apt/sources.list
           echo "deb http://security.ubuntu.com/ubuntu bionic-security multiverse" | sudo tee -a /etc/apt/sources.list
           cat /etc/apt/sources.list
-          sudo rm /etc/apt/source.list.d/*
-          ls /etc/apt/source.list.d
+          sudo rm /etc/apt/sources.list.d/*
+          ls /etc/apt/sources.list.d
           sudo apt-key list
           sudo apt-key adv --fetch-keys "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3b4fe6acc0b21f32"
           sudo apt-key list
