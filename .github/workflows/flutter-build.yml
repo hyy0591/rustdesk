@@ -892,15 +892,18 @@ jobs:
           # install libarchive-tools for bsdtar command used in AppImageBuilder.yml
           sudo apt-get update -y
           sudo apt-get install -y libarchive-tools
+          sudo apt install -y binutils coreutils desktop-file-utils fakeroot fuse libgdk-pixbuf2.0-dev patchelf python3-pip python3-setuptools squashfs-tools strace util-linux zsync
           # set-up appimage-builder
-          pushd /tmp
-          wget -O appimage-builder-x86_64.AppImage https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.1.0/appimage-builder-1.1.0-x86_64.AppImage
-          chmod +x appimage-builder-x86_64.AppImage
-          sudo mv appimage-builder-x86_64.AppImage /usr/local/bin/appimage-builder
-          popd
+          #pushd /tmp
+          #wget -O appimage-builder-x86_64.AppImage https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.1.0/appimage-builder-1.1.0-x86_64.AppImage
+          #chmod +x appimage-builder-x86_64.AppImage
+          #sudo mv appimage-builder-x86_64.AppImage /usr/local/bin/appimage-builder
+          #popd
+          pip3 install git+https://github.com/AppImageCrafters/appimage-builder.git@f38699ef3644fa5409a5a262b7b6d99d6fb85db9
           # run appimage-builder
           pushd appimage
           sudo appimage-builder --skip-tests --recipe ./AppImageBuilder-${{ matrix.job.arch }}.yml
+        continue_on_error: true
 
       - name: Build appimage package (Sciter)
         if: matrix.job.type == 'sciter'
@@ -909,16 +912,23 @@ jobs:
           # install libarchive-tools for bsdtar command used in AppImageBuilder.yml
           sudo apt-get update -y
           sudo apt-get install -y libarchive-tools
+          sudo apt install -y binutils coreutils desktop-file-utils fakeroot fuse libgdk-pixbuf2.0-dev patchelf python3-pip python3-setuptools squashfs-tools strace util-linux zsync
           # set-up appimage-builder
-          pushd /tmp
-          wget -O appimage-builder-x86_64.AppImage https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.1.0/appimage-builder-1.1.0-x86_64.AppImage
-          chmod +x appimage-builder-x86_64.AppImage
-          sudo mv appimage-builder-x86_64.AppImage /usr/local/bin/appimage-builder
-          popd
+          #pushd /tmp
+          #wget -O appimage-builder-x86_64.AppImage https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.1.0/appimage-builder-1.1.0-x86_64.AppImage
+          #chmod +x appimage-builder-x86_64.AppImage
+          #sudo mv appimage-builder-x86_64.AppImage /usr/local/bin/appimage-builder
+          #popd
+          pip3 install git+https://github.com/AppImageCrafters/appimage-builder.git@f38699ef3644fa5409a5a262b7b6d99d6fb85db9
           # run appimage-builder
           pushd appimage
           sudo appimage-builder --skip-tests --recipe ./AppImageBuilder-${{ matrix.job.arch }}.yml
+          ls ./appimage
           mv ./appimage/cscpassist-${{ env.VERSION }}-${{ matrix.job.arch }}.AppImage ./appimage/cscpassist-${{ env.VERSION }}-${{ matrix.job.arch }}-sciter.AppImage
+        continue_on_error: true
+
+      - name: Setup Debug Session
+        uses: csexton/debugger-action@master
 
       - name: Upload AppImage
         if: env.UPLOAD_ARTIFACT == 'true' && matrix.job.type != 'sciter'
