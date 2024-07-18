@@ -578,7 +578,7 @@ jobs:
             case ${{ matrix.job.arch }} in
               aarch64)
                 export PATH=/opt/flutter-elinux/bin:$PATH
-                sed -i "s/flutter build linux --release/flutter-elinux build linux --verbose/g" ./build.py
+                sed -i "s/flutter build linux --release/flutter-elinux build linux --release/g" ./build.py
                 sed -i "s/x64\/release/arm64\/release/g" ./build.py
               ;;
               x86_64)
@@ -918,7 +918,7 @@ jobs:
           # run appimage-builder
           pushd appimage
           sudo appimage-builder --skip-tests --recipe ./AppImageBuilder-${{ matrix.job.arch }}.yml
-          mv ./appimage/rustdesk-${{ env.VERSION }}-${{ matrix.job.arch }}.AppImage ./appimage/cscpassist-${{ env.VERSION }}-${{ matrix.job.arch }}-sciter.AppImage
+          mv ./appimage/cscpassist-${{ env.VERSION }}-${{ matrix.job.arch }}.AppImage ./appimage/cscpassist-${{ env.VERSION }}-${{ matrix.job.arch }}-sciter.AppImage
 
       - name: Upload AppImage
         if: env.UPLOAD_ARTIFACT == 'true' && matrix.job.type != 'sciter'

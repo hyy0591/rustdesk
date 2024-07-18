@@ -60,6 +60,14 @@ jobs:
               deb_arch: amd64,
               vcpkg-triplet: x64-linux,
             }
+          #- {
+          #    arch: aarch64,
+          #    target: aarch64-unknown-linux-gnu,
+          #    distro: ubuntu18.04,
+          #    on: ubuntu-20.04,
+          #    deb_arch: arm64,
+          #    vcpkg-triplet: arm64-linux,
+          #  }
     steps:
       - name: Export GitHub Actions cache environment variables
         uses: actions/github-script@v6
@@ -110,6 +118,73 @@ jobs:
           df -h
           free -m
 
+      - name: Install toolchain
+        if: matrix.job.arch == 'x86_64'
+        run: |
+          sudo apt-get remove -y gcc g++
+          sudo apt-get autoremove -y
+          ls /etc/apt
+          cat /etc/apt/sources.list
+          ls /etc/apt/source.list.d
+          echo "deb http://archive.ubuntu.com/ubuntu/ bionic main restricted" | sudo tee /etc/apt/sources.list
+          echo "deb http://archive.ubuntu.com/ubuntu/ bionic-updates main restricted" | sudo tee -a /etc/apt/sources.list
+          echo "deb http://archive.ubuntu.com/ubuntu/ bionic universe" | sudo tee -a /etc/apt/sources.list
+          echo "deb http://archive.ubuntu.com/ubuntu/ bionic-updates universe" | sudo tee -a /etc/apt/sources.list
+          echo "deb http://archive.ubuntu.com/ubuntu/ bionic multiverse" | sudo tee -a /etc/apt/sources.list
+          echo "deb http://archive.ubuntu.com/ubuntu/ bionic-updates multiverse" | sudo tee -a /etc/apt/sources.list
+          echo "deb http://archive.ubuntu.com/ubuntu/ bionic-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list
+          echo "deb http://security.ubuntu.com/ubuntu bionic-security main restricted" | sudo tee -a /etc/apt/sources.list
+          echo "deb http://security.ubuntu.com/ubuntu bionic-security universe" | sudo tee -a /etc/apt/sources.list
+          echo "deb http://security.ubuntu.com/ubuntu bionic-security multiverse" | sudo tee -a /etc/apt/sources.list
+          cat /etc/apt/sources.list
+          sudo rm /etc/apt/source.list.d/*
+          ls /etc/apt/source.list.d
+          sudo apt-key list
+          sudo apt-key adv --fetch-keys "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3b4fe6acc0b21f32"
+          sudo apt-key list
+          sudo apt-get update -y
+          sudo apt-get install -y gcc-7 g++-7
+        shell: bash
+
+      - name: Install aarch64 toolchain
+        if: matrix.job.arch == 'aarch64'
+        run: |
+          ls /etc/apt
+          cat /etc/apt/sources.list
+          ls /etc/apt/source.list.d
+          echo "deb http://archive.ubuntu.com/ubuntu/ bionic main restricted" | sudo tee /etc/apt/sources.list
+          echo "deb http://archive.ubuntu.com/ubuntu/ bionic-updates main restricted" | sudo tee -a /etc/apt/sources.list
+          echo "deb http://archive.ubuntu.com/ubuntu/ bionic universe" | sudo tee -a /etc/apt/sources.list
+          echo "deb http://archive.ubuntu.com/ubuntu/ bionic-updates universe" | sudo tee -a /etc/apt/sources.list
+          echo "deb http://archive.ubuntu.com/ubuntu/ bionic multiverse" | sudo tee -a /etc/apt/sources.list
+          echo "deb http://archive.ubuntu.com/ubuntu/ bionic-updates multiverse" | sudo tee -a /etc/apt/sources.list
+          echo "deb http://archive.ubuntu.com/ubuntu/ bionic-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list
+          echo "deb http://security.ubuntu.com/ubuntu bionic-security main restricted" | sudo tee -a /etc/apt/sources.list
+          echo "deb http://security.ubuntu.com/ubuntu bionic-security universe" | sudo tee -a /etc/apt/sources.list
+          echo "deb http://security.ubuntu.com/ubuntu bionic-security multiverse" | sudo tee -a /etc/apt/sources.list
+          cat /etc/apt/sources.list
+          sudo rm /etc/apt/source.list.d/*
+          ls /etc/apt/source.list.d
+          sudo apt-key list
+          sudo apt-key adv --fetch-keys "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3b4fe6acc0b21f32"
+          sudo apt-key list
+          sudo apt-get update -y
+          sudo apt-get install -y gcc-7-aarch64-linux-gnu g++-7-aarch64-linux-gnu
+          mkdir /tmp/custom-triplets
+          echo "set(VCPKG_TARGET_ARCHITECTURE arm64)" > /tmp/custom-triplets/arm64-linux.cmake
+          echo "set(VCPKG_CRT_LINKAGE dynamic)" >> /tmp/custom-triplets/arm64-linux.cmake
+          echo "set(VCPKG_LIBRARY_LINKAGE static)" >> /tmp/custom-triplets/arm64-linux.cmake
+          echo "set(VCPKG_CMAKE_SYSTEM_NAME Linux)" >> /tmp/custom-triplets/arm64-linux.cmake
+          echo "set(CMAKE_C_COMPILER aarch64-linux-gnu-gcc)" >> /tmp/custom-triplets/arm64-linux.cmake
+          echo "set(CMAKE_CXX_COMPILER aarch64-linux-gnu-g++)" >> /tmp/custom-triplets/arm64-linux.cmake
+          echo "set(CMAKE_LINKER aarch64-linux-gnu-ld)" >> /tmp/custom-triplets/arm64-linux.cmake
+          echo "set(CMAKE_AR aarch64-linux-gnu-ar)" >> /tmp/custom-triplets/arm64-linux.cmake
+          echo "set(CMAKE_NM aarch64-linux-gnu-nm)" >> /tmp/custom-triplets/arm64-linux.cmake
+          echo "set(CMAKE_OBJCOPY aarch64-linux-gnu-objcopy)" >> /tmp/custom-triplets/arm64-linux.cmake
+          echo "set(CMAKE_OBJDUMP aarch64-linux-gnu-objdump)" >> /tmp/custom-triplets/arm64-linux.cmake
+          echo "set(CMAKE_RANLIB aarch64-linux-gnu-ranlib)" >> /tmp/custom-triplets/arm64-linux.cmake
+        shell: bash
+
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@v1
         if: matrix.job.arch == 'x86_64' || env.UPLOAD_ARTIFACT == 'true'
@@ -141,26 +216,6 @@ jobs:
         with:
           vcpkgDirectory: /opt/artifacts/vcpkg
           vcpkgGitCommitId: ${{ env.VCPKG_COMMIT_ID }}
-
-      - name: Install aarch64 toolchain
-        if: matrix.job.arch == 'aarch64'
-        run: |
-          sudo apt-get update -y
-          sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
-          mkdir /tmp/custom-triplets
-          echo "set(VCPKG_TARGET_ARCHITECTURE arm64)" > /tmp/custom-triplets/arm64-linux.cmake
-          echo "set(VCPKG_CRT_LINKAGE dynamic)" >> /tmp/custom-triplets/arm64-linux.cmake
-          echo "set(VCPKG_LIBRARY_LINKAGE static)" >> /tmp/custom-triplets/arm64-linux.cmake
-          echo "set(VCPKG_CMAKE_SYSTEM_NAME Linux)" >> /tmp/custom-triplets/arm64-linux.cmake
-          echo "set(CMAKE_C_COMPILER aarch64-linux-gnu-gcc)" >> /tmp/custom-triplets/arm64-linux.cmake
-          echo "set(CMAKE_CXX_COMPILER aarch64-linux-gnu-g++)" >> /tmp/custom-triplets/arm64-linux.cmake
-          echo "set(CMAKE_LINKER aarch64-linux-gnu-ld)" >> /tmp/custom-triplets/arm64-linux.cmake
-          echo "set(CMAKE_AR aarch64-linux-gnu-ar)" >> /tmp/custom-triplets/arm64-linux.cmake
-          echo "set(CMAKE_NM aarch64-linux-gnu-nm)" >> /tmp/custom-triplets/arm64-linux.cmake
-          echo "set(CMAKE_OBJCOPY aarch64-linux-gnu-objcopy)" >> /tmp/custom-triplets/arm64-linux.cmake
-          echo "set(CMAKE_OBJDUMP aarch64-linux-gnu-objdump)" >> /tmp/custom-triplets/arm64-linux.cmake
-          echo "set(CMAKE_RANLIB aarch64-linux-gnu-ranlib)" >> /tmp/custom-triplets/arm64-linux.cmake
-        shell: bash
 
       - name: Install vcpkg dependencies (ARM64)
         if: matrix.job.arch == 'aarch64'
@@ -275,7 +330,7 @@ jobs:
             case ${{ matrix.job.arch }} in
               aarch64)
                 export PATH=/opt/flutter-elinux/bin:$PATH
-                sed -i "s/flutter build linux --release/flutter-elinux build linux --verbose/g" ./build.py
+                sed -i "s/flutter build linux --release/flutter-elinux build linux --release/g" ./build.py
                 sed -i "s/x64\/release/arm64\/release/g" ./build.py
               ;;
               x86_64)
