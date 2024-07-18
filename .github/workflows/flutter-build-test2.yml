@@ -49,6 +49,7 @@ jobs:
     runs-on: ${{ matrix.job.on }}
     strategy:
       fail-fast: false
+      continue-on-error: true
       matrix:
         # use a high level qemu-user-static
         job:
@@ -177,7 +178,7 @@ jobs:
           sudo apt-get install -y gcc g++ nasm
           update-alternatives --display cc
           update-alternatives --display c++
-          sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+          sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu gcc-7-aarch64-linux-gnu g++-7-aarch64-linux-gnu
           mkdir /tmp/custom-triplets
           echo "set(VCPKG_TARGET_ARCHITECTURE arm64)" > /tmp/custom-triplets/arm64-linux.cmake
           echo "set(VCPKG_CRT_LINKAGE dynamic)" >> /tmp/custom-triplets/arm64-linux.cmake
@@ -246,6 +247,9 @@ jobs:
         run: |
           $VCPKG_ROOT/vcpkg install --triplet ${{ matrix.job.vcpkg-triplet }} --x-install-root="$VCPKG_ROOT/installed"
         shell: bash
+
+      - name: Setup Debug Session
+        uses: csexton/debugger-action@master
 
       - name: Restore bridge files
         if: matrix.job.arch == 'x86_64' || env.UPLOAD_ARTIFACT == 'true'
