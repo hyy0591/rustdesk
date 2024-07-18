@@ -47,7 +47,6 @@ jobs:
     needs: [generate-bridge-linux]
     name: build rustdesk linux ${{ matrix.job.target }} 
     runs-on: ${{ matrix.job.on }}
-    continue-on-error: true
     strategy:
       fail-fast: false
       matrix:
@@ -193,6 +192,7 @@ jobs:
           echo "set(CMAKE_OBJDUMP aarch64-linux-gnu-objdump)" >> /tmp/custom-triplets/arm64-linux.cmake
           echo "set(CMAKE_RANLIB aarch64-linux-gnu-ranlib)" >> /tmp/custom-triplets/arm64-linux.cmake
         shell: bash
+        continue-on-error: true
 
       - name: Setup Debug Session
         uses: csexton/debugger-action@master
@@ -241,12 +241,14 @@ jobs:
         run: |
           $VCPKG_ROOT/vcpkg install --triplet ${{ matrix.job.vcpkg-triplet }} --x-install-root="$VCPKG_ROOT/installed" --overlay-triplets=/tmp/custom-triplets
         shell: bash
+        continue-on-error: true
 
       - name: Install vcpkg dependencies
         if: matrix.job.arch == 'x86_64'
         run: |
           $VCPKG_ROOT/vcpkg install --triplet ${{ matrix.job.vcpkg-triplet }} --x-install-root="$VCPKG_ROOT/installed"
         shell: bash
+        continue-on-error: true
 
       - name: Setup Debug Session
         uses: csexton/debugger-action@master
