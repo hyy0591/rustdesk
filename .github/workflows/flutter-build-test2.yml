@@ -47,9 +47,9 @@ jobs:
     needs: [generate-bridge-linux]
     name: build rustdesk linux ${{ matrix.job.target }} 
     runs-on: ${{ matrix.job.on }}
+    continue-on-error: true
     strategy:
       fail-fast: false
-      continue-on-error: true
       matrix:
         # use a high level qemu-user-static
         job:
