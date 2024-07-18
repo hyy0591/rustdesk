@@ -111,11 +111,15 @@ jobs:
           df -h
           free -m
 
+      - name: Setup Debug Session
+        uses: csexton/debugger-action@master
+
       - name: Install toolchain
         if: matrix.job.arch == 'x86_64'
         run: |
           sudo apt-get remove -y g++-9 g++-10 gcc g++
-          sudo apt remove clang-10 clang-11 clang-12 clang-format-10 clang-format-11 clang-format-12 clang-tidy-10 clang-tidy-11 clang-tidy-12 clang-tools-10 clang-tools-11 clang-tools-12
+          sudo apt-get remove clang-10 clang-11 clang-12 clang-format-10 clang-format-11 clang-format-12 clang-tidy-10 clang-tidy-11 clang-tidy-12 clang-tools-10 clang-tools-11 clang-tools-12
+          sudo apt-get remove binutils-common binutils-x86-64-linux-gnu binutils libbinutils libcc1-0
           sudo apt-get autoremove -y
           ls /etc/apt
           cat /etc/apt/sources.list
@@ -149,8 +153,8 @@ jobs:
         if: matrix.job.arch == 'aarch64'
         run: |
           sudo apt-get remove -y g++-9 g++-10 gcc g++
-          sudo apt remove clang-10 clang-11 clang-12 clang-format-10 clang-format-11 clang-format-12 clang-tidy-10 clang-tidy-11 clang-tidy-12 clang-tools-10 clang-tools-11 clang-tools-12
-          sudo apt remove binutils-common binutils-x86-64-linux-gnu binutils libbinutils libcc1-0
+          sudo apt-get remove clang-10 clang-11 clang-12 clang-format-10 clang-format-11 clang-format-12 clang-tidy-10 clang-tidy-11 clang-tidy-12 clang-tools-10 clang-tools-11 clang-tools-12
+          sudo apt-get remove binutils-common binutils-x86-64-linux-gnu binutils libbinutils libcc1-0
           sudo apt-get autoremove -y
           ls /etc/apt
           cat /etc/apt/sources.list
