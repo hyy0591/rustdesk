@@ -406,7 +406,7 @@ jobs:
         if: matrix.job.arch == 'aarch64'
         uses: pierotofy/set-swap-space@master
         with:
-          swap-size-gb: 21
+          swap-size-gb: 30
 
       - name: Free Space
         run: |
