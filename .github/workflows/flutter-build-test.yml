@@ -212,7 +212,7 @@ jobs:
     name: ${{ matrix.job.target }} (${{ matrix.job.os }})
     runs-on: ${{ matrix.job.os }}
     # Temporarily disable this action due to additional test is needed.
-    # if: false
+    if: false
     strategy:
       fail-fast: false
       matrix:
