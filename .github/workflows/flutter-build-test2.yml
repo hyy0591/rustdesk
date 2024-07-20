@@ -535,7 +535,8 @@ jobs:
 
   build-appimage:
     name: Build appimage ${{ matrix.job.target }}
-    needs: [build-rustdesk-linux, build-rustdesk-linux-sciter]
+    #needs: [build-rustdesk-linux, build-rustdesk-linux-sciter]
+    needs: [build-rustdesk-linux]
     runs-on: ubuntu-20.04
     if: ${{ inputs.upload-artifact }}
     strategy:
