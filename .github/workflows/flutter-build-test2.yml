@@ -329,7 +329,7 @@ jobs:
           path: rustdesk-${{ env.VERSION }}-${{ matrix.job.arch }}.deb
 
   build-rustdesk-linux-sciter:
-    if: false && ${{ inputs.upload-artifact }}
+    if: false #${{ inputs.upload-artifact }}
     #needs: build-rustdesk-linux # not for dep, just make it run later for parallelism
     runs-on: ubuntu-20.04
     name: build-rustdesk-sciter-${{ matrix.job.target }}
