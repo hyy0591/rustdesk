@@ -258,6 +258,10 @@ jobs:
         run: |
           $VCPKG_ROOT/vcpkg install --triplet ${{ matrix.job.vcpkg-triplet }} --x-install-root="$VCPKG_ROOT/installed"
         shell: bash
+        continue-on-error: true
+
+      - name: Setup Debug Session
+        uses: csexton/debugger-action@master
 
       - name: Build rustdesk
         id: build
