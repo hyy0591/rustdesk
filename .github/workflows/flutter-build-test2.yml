@@ -60,22 +60,29 @@ jobs:
               deb_arch: amd64,
               vcpkg-triplet: x64-linux,
             }
-          - {
-              arch: aarch64,
-              target: aarch64-unknown-linux-gnu,
-              distro: ubuntu18.04,
-              on: ubuntu-20.04,
-              deb_arch: arm64,
-              vcpkg-triplet: arm64-linux,
-            }
+          #- {
+          #    arch: aarch64,
+          #    target: aarch64-unknown-linux-gnu,
+          #    distro: ubuntu18.04,
+          #    on: ubuntu-20.04,
+          #    deb_arch: arm64,
+          #    vcpkg-triplet: arm64-linux,
+          #  }
     steps:
+      - name: Export GitHub Actions cache environment variables
+        uses: actions/github-script@v6
+        with:
+          script: |
+            core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
+            core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
+
       - name: Maximize build space
         run: |
           sudo rm -rf /opt/ghc
           sudo rm -rf /usr/local/lib/android
           sudo rm -rf /usr/share/dotnet
           sudo apt-get update -y
-          sudo apt-get install -y qemu-user-static tmate openssh-client nasm
+          sudo apt-get install -y nasm qemu-user-static
 
       - name: Checkout source code
         uses: actions/checkout@v3
@@ -104,109 +111,12 @@ jobs:
         if: matrix.job.arch == 'aarch64'
         uses: pierotofy/set-swap-space@master
         with:
-          swap-size-gb: 21
+          swap-size-gb: 30
 
       - name: Free Space
         run: |
           df -h
           free -m
-
-      #- name: Setup Debug Session
-      #  uses: csexton/debugger-action@master
-
-      - name: Install toolchain
-        if: matrix.job.arch == 'x86_64'
-        run: |
-          sudo apt-get remove -y g++-9 g++-10 gcc g++
-          sudo apt-get remove clang-10 clang-11 clang-12 clang-format-10 clang-format-11 clang-format-12 clang-tidy-10 clang-tidy-11 clang-tidy-12 clang-tools-10 clang-tools-11 clang-tools-12
-          sudo apt-get remove binutils-common binutils-x86-64-linux-gnu binutils libbinutils libcc1-0 libtool
-          sudo apt-get autoremove -y
-          ls /etc/apt
-          cat /etc/apt/sources.list
-          ls /etc/apt/sources.list.d
-          echo "deb http://archive.ubuntu.com/ubuntu/ bionic main restricted" | sudo tee /etc/apt/sources.list
-          #echo "deb http://archive.ubuntu.com/ubuntu/ bionic-updates main restricted" | sudo tee -a /etc/apt/sources.list
-          echo "deb http://archive.ubuntu.com/ubuntu/ bionic universe" | sudo tee -a /etc/apt/sources.list
-          #echo "deb http://archive.ubuntu.com/ubuntu/ bionic-updates universe" | sudo tee -a /etc/apt/sources.list
-          echo "deb http://archive.ubuntu.com/ubuntu/ bionic multiverse" | sudo tee -a /etc/apt/sources.list
-          #echo "deb http://archive.ubuntu.com/ubuntu/ bionic-updates multiverse" | sudo tee -a /etc/apt/sources.list
-          #echo "deb http://archive.ubuntu.com/ubuntu/ bionic-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list
-          #echo "deb http://security.ubuntu.com/ubuntu bionic-security main restricted" | sudo tee -a /etc/apt/sources.list
-          #echo "deb http://security.ubuntu.com/ubuntu bionic-security universe" | sudo tee -a /etc/apt/sources.list
-          #echo "deb http://security.ubuntu.com/ubuntu bionic-security multiverse" | sudo tee -a /etc/apt/sources.list
-          cat /etc/apt/sources.list
-          sudo rm /etc/apt/sources.list.d/*
-          ls /etc/apt/sources.list.d
-          sudo apt-key list
-          sudo apt-key adv --fetch-keys "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3b4fe6acc0b21f32"
-          sudo apt-key list
-          sudo apt-get clean
-          sudo apt-get autoclean
-          sudo apt-get autoremove -y
-          sudo apt-get update -y
-          sudo apt-get install -y gcc g++ yasm
-          update-alternatives --display cc
-          update-alternatives --display c++
-        shell: bash
-
-      - name: Install aarch64 toolchain
-        if: matrix.job.arch == 'aarch64'
-        run: |
-          sudo apt-get remove -y g++-9 g++-10 gcc g++
-          sudo apt-get remove clang-10 clang-11 clang-12 clang-format-10 clang-format-11 clang-format-12 clang-tidy-10 clang-tidy-11 clang-tidy-12 clang-tools-10 clang-tools-11 clang-tools-12
-          sudo apt-get remove binutils-common binutils-x86-64-linux-gnu binutils libbinutils libcc1-0 libtool
-          sudo apt-get autoremove -y
-          ls /etc/apt
-          cat /etc/apt/sources.list
-          ls /etc/apt/sources.list.d
-          echo "deb http://archive.ubuntu.com/ubuntu/ bionic main restricted" | sudo tee /etc/apt/sources.list
-          #echo "deb http://archive.ubuntu.com/ubuntu/ bionic-updates main restricted" | sudo tee -a /etc/apt/sources.list
-          echo "deb http://archive.ubuntu.com/ubuntu/ bionic universe" | sudo tee -a /etc/apt/sources.list
-          #echo "deb http://archive.ubuntu.com/ubuntu/ bionic-updates universe" | sudo tee -a /etc/apt/sources.list
-          echo "deb http://archive.ubuntu.com/ubuntu/ bionic multiverse" | sudo tee -a /etc/apt/sources.list
-          #echo "deb http://archive.ubuntu.com/ubuntu/ bionic-updates multiverse" | sudo tee -a /etc/apt/sources.list
-          echo "deb http://archive.ubuntu.com/ubuntu/ bionic-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list
-          #echo "deb http://security.ubuntu.com/ubuntu bionic-security main restricted" | sudo tee -a /etc/apt/sources.list
-          #echo "deb http://security.ubuntu.com/ubuntu bionic-security universe" | sudo tee -a /etc/apt/sources.list
-          #echo "deb http://security.ubuntu.com/ubuntu bionic-security multiverse" | sudo tee -a /etc/apt/sources.list
-          cat /etc/apt/sources.list
-          sudo rm /etc/apt/sources.list.d/*
-          ls /etc/apt/sources.list.d
-          sudo apt-key list
-          sudo apt-key adv --fetch-keys "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3b4fe6acc0b21f32"
-          sudo apt-key list
-          sudo apt-get clean
-          sudo apt-get autoclean
-          sudo apt-get autoremove -y
-          sudo apt-get update -y
-          sudo apt-get install -y gcc g++ yasm
-          update-alternatives --display cc
-          update-alternatives --display c++
-          sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu gcc-7-aarch64-linux-gnu g++-7-aarch64-linux-gnu
-          mkdir /tmp/custom-triplets
-          echo "set(VCPKG_TARGET_ARCHITECTURE arm64)" > /tmp/custom-triplets/arm64-linux.cmake
-          echo "set(VCPKG_CRT_LINKAGE dynamic)" >> /tmp/custom-triplets/arm64-linux.cmake
-          echo "set(VCPKG_LIBRARY_LINKAGE static)" >> /tmp/custom-triplets/arm64-linux.cmake
-          echo "set(VCPKG_CMAKE_SYSTEM_NAME Linux)" >> /tmp/custom-triplets/arm64-linux.cmake
-          echo "set(CMAKE_C_COMPILER aarch64-linux-gnu-gcc)" >> /tmp/custom-triplets/arm64-linux.cmake
-          echo "set(CMAKE_CXX_COMPILER aarch64-linux-gnu-g++)" >> /tmp/custom-triplets/arm64-linux.cmake
-          echo "set(CMAKE_LINKER aarch64-linux-gnu-ld)" >> /tmp/custom-triplets/arm64-linux.cmake
-          echo "set(CMAKE_AR aarch64-linux-gnu-ar)" >> /tmp/custom-triplets/arm64-linux.cmake
-          echo "set(CMAKE_NM aarch64-linux-gnu-nm)" >> /tmp/custom-triplets/arm64-linux.cmake
-          echo "set(CMAKE_OBJCOPY aarch64-linux-gnu-objcopy)" >> /tmp/custom-triplets/arm64-linux.cmake
-          echo "set(CMAKE_OBJDUMP aarch64-linux-gnu-objdump)" >> /tmp/custom-triplets/arm64-linux.cmake
-          echo "set(CMAKE_RANLIB aarch64-linux-gnu-ranlib)" >> /tmp/custom-triplets/arm64-linux.cmake
-        shell: bash
-
-      #- name: Setup Debug Session
-      #  uses: csexton/debugger-action@master
-
-      - name: Export GitHub Actions cache environment variables
-        uses: actions/github-script@v6
-        with:
-          script: |
-            core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
-            core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@v1
@@ -240,6 +150,26 @@ jobs:
           vcpkgDirectory: /opt/artifacts/vcpkg
           vcpkgGitCommitId: ${{ env.VCPKG_COMMIT_ID }}
 
+      - name: Install aarch64 toolchain
+        if: matrix.job.arch == 'aarch64'
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+          mkdir /tmp/custom-triplets
+          echo "set(VCPKG_TARGET_ARCHITECTURE arm64)" > /tmp/custom-triplets/arm64-linux.cmake
+          echo "set(VCPKG_CRT_LINKAGE dynamic)" >> /tmp/custom-triplets/arm64-linux.cmake
+          echo "set(VCPKG_LIBRARY_LINKAGE static)" >> /tmp/custom-triplets/arm64-linux.cmake
+          echo "set(VCPKG_CMAKE_SYSTEM_NAME Linux)" >> /tmp/custom-triplets/arm64-linux.cmake
+          echo "set(CMAKE_C_COMPILER aarch64-linux-gnu-gcc)" >> /tmp/custom-triplets/arm64-linux.cmake
+          echo "set(CMAKE_CXX_COMPILER aarch64-linux-gnu-g++)" >> /tmp/custom-triplets/arm64-linux.cmake
+          echo "set(CMAKE_LINKER aarch64-linux-gnu-ld)" >> /tmp/custom-triplets/arm64-linux.cmake
+          echo "set(CMAKE_AR aarch64-linux-gnu-ar)" >> /tmp/custom-triplets/arm64-linux.cmake
+          echo "set(CMAKE_NM aarch64-linux-gnu-nm)" >> /tmp/custom-triplets/arm64-linux.cmake
+          echo "set(CMAKE_OBJCOPY aarch64-linux-gnu-objcopy)" >> /tmp/custom-triplets/arm64-linux.cmake
+          echo "set(CMAKE_OBJDUMP aarch64-linux-gnu-objdump)" >> /tmp/custom-triplets/arm64-linux.cmake
+          echo "set(CMAKE_RANLIB aarch64-linux-gnu-ranlib)" >> /tmp/custom-triplets/arm64-linux.cmake
+        shell: bash
+
       - name: Install vcpkg dependencies (ARM64)
         if: matrix.job.arch == 'aarch64'
         run: |
@@ -251,9 +181,6 @@ jobs:
         run: |
           $VCPKG_ROOT/vcpkg install --triplet ${{ matrix.job.vcpkg-triplet }} --x-install-root="$VCPKG_ROOT/installed"
         shell: bash
-
-      #- name: Setup Debug Session
-      #  uses: csexton/debugger-action@master
 
       - name: Restore bridge files
         if: matrix.job.arch == 'x86_64' || env.UPLOAD_ARTIFACT == 'true'
@@ -278,19 +205,6 @@ jobs:
             --volume "/opt/artifacts:/opt/artifacts"
           shell: /bin/bash
           install: |
-            echo "deb http://archive.ubuntu.com/ubuntu/ bionic main restricted" | tee /etc/apt/sources.list
-            #echo "deb http://archive.ubuntu.com/ubuntu/ bionic-updates main restricted" | tee -a /etc/apt/sources.list
-            echo "deb http://archive.ubuntu.com/ubuntu/ bionic universe" | tee -a /etc/apt/sources.list
-            #echo "deb http://archive.ubuntu.com/ubuntu/ bionic-updates universe" | tee -a /etc/apt/sources.list
-            echo "deb http://archive.ubuntu.com/ubuntu/ bionic multiverse" | tee -a /etc/apt/sources.list
-            #echo "deb http://archive.ubuntu.com/ubuntu/ bionic-updates multiverse" | tee -a /etc/apt/sources.list
-            #echo "deb http://archive.ubuntu.com/ubuntu/ bionic-backports main restricted universe multiverse" | tee -a /etc/apt/sources.list
-            #echo "deb http://security.ubuntu.com/ubuntu bionic-security main restricted" | tee -a /etc/apt/sources.list
-            #echo "deb http://security.ubuntu.com/ubuntu bionic-security universe" | tee -a /etc/apt/sources.list
-            #echo "deb http://security.ubuntu.com/ubuntu bionic-security multiverse" | tee -a /etc/apt/sources.list
-            apt-get clean
-            apt-get autoclean
-            apt-get autoremove -y
             apt-get update -y
             echo -e "installing deps"
             apt-get install -y \
@@ -303,6 +217,7 @@ jobs:
                g++ \
                libappindicator3-dev \
                libasound2-dev \
+               libclang-10-dev \
                libgstreamer1.0-dev \
                libgstreamer-plugins-base1.0-dev \
                libgtk-3-dev \
@@ -315,8 +230,8 @@ jobs:
                libxcb-xfixes0-dev \
                libxdo-dev \
                libxfixes-dev \
+               llvm-10-dev \
                nasm \
-               yasm \
                ninja-build \
                pkg-config \
                tree \
@@ -324,9 +239,6 @@ jobs:
                unzip \
                wget \
                xz-utils
-            #apt-get -y \
-            #   libclang-10-dev \
-            #   llvm-10-dev
             # we have libopus compiled by us.
             apt-get remove -y libopus-dev || true
             # output devs
@@ -416,9 +328,214 @@ jobs:
           name: rustdesk-${{ env.VERSION }}-${{ matrix.job.arch }}.deb
           path: rustdesk-${{ env.VERSION }}-${{ matrix.job.arch }}.deb
 
+  build-rustdesk-linux-sciter:
+    if: ${{ inputs.upload-artifact }}
+    #needs: build-rustdesk-linux # not for dep, just make it run later for parallelism
+    runs-on: ubuntu-20.04
+    name: build-rustdesk-sciter-${{ matrix.job.target }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # use a high level qemu-user-static
+        job:
+          - {
+              arch: x86_64,
+              target: x86_64-unknown-linux-gnu,
+              deb_arch: amd64,
+              vcpkg-triplet: x64-linux,
+              use-cross: false
+            }
+          #- {
+          #    arch: aarch64,
+          #    target: aarch64-unknown-linux-gnu,
+          #    deb_arch: arm64,
+          #    vcpkg-triplet: arm64-linux,
+          #    use-cross: true
+          #  }
+    steps:
+      - name: Export GitHub Actions cache environment variables
+        uses: actions/github-script@v6
+        with:
+          script: |
+            core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
+            core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
+
+      - name: Maximize build space
+        run: |
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /usr/share/dotnet
+          sudo apt-get update -y
+          sudo apt-get install -y nasm qemu-user-static
+
+      - name: Set Swap Space (ARM64)
+        if: matrix.job.arch == 'aarch64'
+        uses: pierotofy/set-swap-space@master
+        with:
+          swap-size-gb: 21
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+               cmake \
+               curl \
+               g++ \
+               gcc \
+               git \
+               nasm \
+               ninja-build \
+               pkg-config \
+               unzip \
+               xz-utils \
+               zip
+
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Free Space
+        run: |
+          df -h
+          free -m
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@v1
+        with:
+          toolchain: ${{ env.RUST_VERSION }}
+          targets: ${{ matrix.job.target }}
+          components: "rustfmt"
+
+      - name: Save Rust toolchain version
+        run: |
+          RUST_TOOLCHAIN_VERSION=$(cargo --version | awk '{print $2}')
+          echo "RUST_TOOLCHAIN_VERSION=$RUST_TOOLCHAIN_VERSION" >> $GITHUB_ENV
+
+      - name: Setup vcpkg with Github Actions binary cache
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgDirectory: /opt/artifacts/vcpkg
+          vcpkgGitCommitId: ${{ env.VCPKG_COMMIT_ID }}
+
+      - name: Install aarch64 toolchain
+        if: matrix.job.arch == 'aarch64'
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y crossbuild-essential-arm64
+        shell: bash
+
+      - name: Install vcpkg dependencies
+        run: |
+          cp $PWD/res/vcpkg/linux.cmake $VCPKG_ROOT/scripts/toolchains/linux.cmake
+          $VCPKG_ROOT/vcpkg install --triplet ${{ matrix.job.vcpkg-triplet }} --x-install-root="$VCPKG_ROOT/installed"
+        shell: bash
+
+      - uses: rustdesk-org/run-on-arch-action@amd64-support
+        name: Build rustdesk sciter binary for ${{ matrix.job.arch }}
+        id: vcpkg
+        with:
+          arch: ${{ matrix.job.arch }}
+          distro: ubuntu18.04-rustdesk
+          githubToken: ${{ github.token }}
+          setup: |
+            ls -l "${PWD}"
+          dockerRunArgs: |
+            --volume "${PWD}:/workspace"
+            --volume "/opt/artifacts:/opt/artifacts"
+          shell: /bin/bash
+          install: |
+            apt-get update -y
+            apt-get install -y \
+               build-essential \
+               clang \
+               cmake \
+               curl \
+               gcc \
+               git \
+               g++ \
+               libappindicator3-dev \
+               libasound2-dev \
+               libclang-dev \
+               libdbus-1-dev \
+               libglib2.0-dev \
+               libgstreamer1.0-dev \
+               libgstreamer-plugins-base1.0-dev \
+               libgtk-3-dev \
+               liblzma-dev \
+               libpam0g-dev \
+               libpulse-dev \
+               libva-dev \
+               libvdpau-dev \
+               libxcb-randr0-dev \
+               libxcb-shape0-dev \
+               libxcb-xfixes0-dev \
+               libxdo-dev \
+               libxfixes-dev \
+               nasm \
+               ninja-build \
+               pkg-config \
+               python3 \
+               rpm \
+               unzip \
+               wget \
+               xz-utils
+          run: |
+            # disable git safe.directory
+            git config --global --add safe.directory "*"
+            # rust
+            pushd /opt
+            # do not use rustup, because memory overflow in qemu
+            wget -O rust.tar.gz https://static.rust-lang.org/dist/rust-${{env.RUST_TOOLCHAIN_VERSION}}-${{ matrix.job.target }}.tar.gz
+            tar -zxvf rust.tar.gz > /dev/null && rm rust.tar.gz
+            cd rust-${{env.RUST_TOOLCHAIN_VERSION}}-${{ matrix.job.target }} && ./install.sh
+            rm -rf rust-${{env.RUST_TOOLCHAIN_VERSION}}-${{ matrix.job.target }}
+            # edit config
+            mkdir -p ~/.cargo/
+            echo """
+              [source.crates-io]
+              registry = 'https://github.com/rust-lang/crates.io-index'
+            """ > ~/.cargo/config
+
+            cat ~/.cargo/config
+            if [[ "${{ matrix.job.arch }}" == "aarch64" ]]; then
+              export JOBS="--jobs 4"
+              export CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse
+              echo $CARGO_REGISTRIES_CRATES_IO_PROTOCOL
+            else
+              export JOBS="--jobs 1"
+            fi
+            echo $JOBS
+
+            # build
+            pushd /workspace
+            python3 ./res/inline-sciter.py
+            export VCPKG_ROOT=/opt/artifacts/vcpkg
+            export ARCH=${{ matrix.job.arch }}
+            export CARGO_INCREMENTAL=0
+            cargo build $JOBS --features inline --release --bins
+            # package
+            mkdir -p ./Release
+            mv ./target/release/cscpassist ./Release/cscpassist
+            wget -O ./Release/libsciter-gtk.so https://github.com/c-smile/sciter-sdk/raw/master/bin.lnx/arm64/libsciter-gtk.so
+            ./build.py --package ./Release
+
+      - name: Rename rustdesk
+        shell: bash
+        run: |
+          for name in rustdesk*??.deb; do
+              # use cp to duplicate deb files to fit other packages.
+              cp "$name" "${name%%.deb}-${{ matrix.job.arch }}-sciter.deb"
+          done
+
+      - name: Upload deb 
+        uses: actions/upload-artifact@master
+        if: env.UPLOAD_ARTIFACT == 'true'
+        with:
+          name: rustdesk-${{ env.VERSION }}-${{ matrix.job.arch }}-sciter.deb
+          path: rustdesk-${{ env.VERSION }}-${{ matrix.job.arch }}-sciter.deb
+
   build-appimage:
     name: Build appimage ${{ matrix.job.target }}
-    needs: [build-rustdesk-linux]
+    needs: [build-rustdesk-linux, build-rustdesk-linux-sciter]
     runs-on: ubuntu-20.04
     if: ${{ inputs.upload-artifact }}
     strategy:
@@ -428,40 +545,111 @@ jobs:
           - {
               target: x86_64-unknown-linux-gnu,
               arch: x86_64,
+              type: flutter
+            }
+          - {
+              target: aarch64-unknown-linux-gnu,
+              arch: aarch64,
+              type: flutter
+            }
+          - {
+              target: x86_64-unknown-linux-gnu,
+              arch: x86_64,
+              type: sciter
+            }
+          - {
+              target: aarch64-unknown-linux-gnu,
+              arch: aarch64,
+              type: sciter
             }
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
 
       - name: Download Binary
+        if: matrix.job.type != 'sciter'
         uses: actions/download-artifact@master
         with:
           name: rustdesk-${{ env.VERSION }}-${{ matrix.job.arch }}.deb
           path: .
 
+      - name: Download Binary (Sciter)
+        if: matrix.job.type == 'sciter'
+        uses: actions/download-artifact@master
+        with:
+          name: rustdesk-${{ env.VERSION }}-${{ matrix.job.arch }}-sciter.deb
+          path: .
+
       - name: Rename Binary
+        if: matrix.job.type != 'sciter'
         run: |
           mv rustdesk-${{ env.VERSION }}-${{ matrix.job.arch }}.deb appimage/rustdesk.deb
 
+      - name: Rename Binary (Sciter)
+        if: matrix.job.type == 'sciter'
+        run: |
+          mv rustdesk-${{ env.VERSION }}-${{ matrix.job.arch }}-sciter.deb appimage/rustdesk.deb
+
       - name: Build appimage package
+        if: matrix.job.type != 'sciter'
         shell: bash
         run: |
           # install libarchive-tools for bsdtar command used in AppImageBuilder.yml
           sudo apt-get update -y
           sudo apt-get install -y libarchive-tools
+          sudo apt install -y binutils coreutils desktop-file-utils fakeroot fuse libgdk-pixbuf2.0-dev patchelf python3-pip python3-setuptools squashfs-tools strace util-linux zsync
           # set-up appimage-builder
-          pushd /tmp
-          wget -O appimage-builder-x86_64.AppImage https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.1.0/appimage-builder-1.1.0-x86_64.AppImage
-          chmod +x appimage-builder-x86_64.AppImage
-          sudo mv appimage-builder-x86_64.AppImage /usr/local/bin/appimage-builder
-          popd
+          #pushd /tmp
+          #wget -O appimage-builder-x86_64.AppImage https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.1.0/appimage-builder-1.1.0-x86_64.AppImage
+          #chmod +x appimage-builder-x86_64.AppImage
+          #sudo mv appimage-builder-x86_64.AppImage /usr/local/bin/appimage-builder
+          #popd
+          sudo pip3 install testresources
+          sudo pip3 install requests -U
+          sudo pip3 install urllib3 -U
+          sudo pip3 install git+https://github.com/AppImageCrafters/appimage-builder.git@f38699ef3644fa5409a5a262b7b6d99d6fb85db9
           # run appimage-builder
           pushd appimage
           sudo appimage-builder --skip-tests --recipe ./AppImageBuilder-${{ matrix.job.arch }}.yml
+        continue-on-error: true
+
+      - name: Build appimage package (Sciter)
+        if: matrix.job.type == 'sciter'
+        shell: bash
+        run: |
+          # install libarchive-tools for bsdtar command used in AppImageBuilder.yml
+          sudo apt-get update -y
+          sudo apt-get install -y libarchive-tools
+          sudo apt install -y binutils coreutils desktop-file-utils fakeroot fuse libgdk-pixbuf2.0-dev patchelf python3-pip python3-setuptools squashfs-tools strace util-linux zsync
+          # set-up appimage-builder
+          #pushd /tmp
+          #wget -O appimage-builder-x86_64.AppImage https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.1.0/appimage-builder-1.1.0-x86_64.AppImage
+          #chmod +x appimage-builder-x86_64.AppImage
+          #sudo mv appimage-builder-x86_64.AppImage /usr/local/bin/appimage-builder
+          #popd
+          sudo pip3 install testresources
+          sudo pip3 install requests -U
+          sudo pip3 install urllib3 -U
+          sudo pip3 install git+https://github.com/AppImageCrafters/appimage-builder.git@f38699ef3644fa5409a5a262b7b6d99d6fb85db9
+          # run appimage-builder
+          pushd appimage
+          sudo appimage-builder --skip-tests --recipe ./AppImageBuilder-${{ matrix.job.arch }}.yml
+          mv ./cscpassist-${{ env.VERSION }}-${{ matrix.job.arch }}.AppImage ./cscpassist-${{ env.VERSION }}-${{ matrix.job.arch }}-sciter.AppImage
+        continue-on-error: true
+
+      - name: Setup Debug Session
+        uses: csexton/debugger-action@master
 
       - name: Upload AppImage
-        if: env.UPLOAD_ARTIFACT == 'true'
+        if: env.UPLOAD_ARTIFACT == 'true' && matrix.job.type != 'sciter'
         uses: actions/upload-artifact@master
         with:
           name: rustdesk-unsigned-linux-APPIMAGE-${{ matrix.job.arch }}
           path: ./appimage/cscpassist-${{ env.VERSION }}-${{ matrix.job.arch }}.AppImage
+
+      - name: Upload AppImage (Sciter)
+        if: env.UPLOAD_ARTIFACT == 'true' && matrix.job.type == 'sciter'
+        uses: actions/upload-artifact@master
+        with:
+          name: rustdesk-unsigned-linux-APPIMAGE-${{ matrix.job.arch }}
+          path: ./appimage/cscpassist-${{ env.VERSION }}-${{ matrix.job.arch }}-sciter.AppImage
