@@ -329,7 +329,7 @@ jobs:
           path: rustdesk-${{ env.VERSION }}-${{ matrix.job.arch }}.deb
 
   build-rustdesk-linux-sciter:
-    if: ${{ inputs.upload-artifact }}
+    if: false && ${{ inputs.upload-artifact }}
     #needs: build-rustdesk-linux # not for dep, just make it run later for parallelism
     runs-on: ubuntu-20.04
     name: build-rustdesk-sciter-${{ matrix.job.target }}
@@ -547,21 +547,21 @@ jobs:
               arch: x86_64,
               type: flutter
             }
-          - {
-              target: aarch64-unknown-linux-gnu,
-              arch: aarch64,
-              type: flutter
-            }
-          - {
-              target: x86_64-unknown-linux-gnu,
-              arch: x86_64,
-              type: sciter
-            }
-          - {
-              target: aarch64-unknown-linux-gnu,
-              arch: aarch64,
-              type: sciter
-            }
+          #- {
+          #    target: aarch64-unknown-linux-gnu,
+          #    arch: aarch64,
+          #    type: flutter
+          #  }
+          #- {
+          #    target: x86_64-unknown-linux-gnu,
+          #    arch: x86_64,
+          #    type: sciter
+          #  }
+          #- {
+          #    target: aarch64-unknown-linux-gnu,
+          #    arch: aarch64,
+          #    type: sciter
+          #  }
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
@@ -634,11 +634,11 @@ jobs:
           # run appimage-builder
           pushd appimage
           sudo appimage-builder --skip-tests --recipe ./AppImageBuilder-${{ matrix.job.arch }}.yml
-          mv ./cscpassist-${{ env.VERSION }}-${{ matrix.job.arch }}.AppImage ./cscpassist-${{ env.VERSION }}-${{ matrix.job.arch }}-sciter.AppImage
-        continue-on-error: true
+          sudo mv ./cscpassist-${{ env.VERSION }}-${{ matrix.job.arch }}.AppImage ./cscpassist-${{ env.VERSION }}-${{ matrix.job.arch }}-sciter.AppImage
+        #continue-on-error: true
 
-      - name: Setup Debug Session
-        uses: csexton/debugger-action@master
+      #- name: Setup Debug Session
+      #  uses: csexton/debugger-action@master
 
       - name: Upload AppImage
         if: env.UPLOAD_ARTIFACT == 'true' && matrix.job.type != 'sciter'
@@ -651,5 +651,5 @@ jobs:
         if: env.UPLOAD_ARTIFACT == 'true' && matrix.job.type == 'sciter'
         uses: actions/upload-artifact@master
         with:
-          name: rustdesk-unsigned-linux-APPIMAGE-${{ matrix.job.arch }}
+          name: rustdesk-unsigned-linux-APPIMAGE-${{ matrix.job.arch }}-sciter
           path: ./appimage/cscpassist-${{ env.VERSION }}-${{ matrix.job.arch }}-sciter.AppImage
