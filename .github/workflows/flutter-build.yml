@@ -210,6 +210,7 @@ jobs:
   # The fallback for the flutter version, we use Sciter for 32bit Windows.
   build-for-windows-sciter:
     name: ${{ matrix.job.target }} (${{ matrix.job.os }})
+    needs: build-for-windows-flutter # not for dep, just make it run later for parallelism
     runs-on: ${{ matrix.job.os }}
     # Temporarily disable this action due to additional test is needed.
     # if: false
@@ -406,7 +407,7 @@ jobs:
         if: matrix.job.arch == 'aarch64'
         uses: pierotofy/set-swap-space@master
         with:
-          swap-size-gb: 21
+          swap-size-gb: 30
 
       - name: Free Space
         run: |
@@ -637,6 +638,7 @@ jobs:
               arch: x86_64,
               target: x86_64-unknown-linux-gnu,
               deb_arch: amd64,
+              sciter_arch: x64,
               vcpkg-triplet: x64-linux,
               use-cross: false
             }
@@ -644,6 +646,7 @@ jobs:
               arch: aarch64,
               target: aarch64-unknown-linux-gnu,
               deb_arch: arm64,
+              sciter_arch: arm64,
               vcpkg-triplet: arm64-linux,
               use-cross: true
             }
@@ -810,7 +813,7 @@ jobs:
             # package
             mkdir -p ./Release
             mv ./target/release/cscpassist ./Release/cscpassist
-            wget -O ./Release/libsciter-gtk.so https://github.com/c-smile/sciter-sdk/raw/master/bin.lnx/arm64/libsciter-gtk.so
+            wget -O ./Release/libsciter-gtk.so https://github.com/c-smile/sciter-sdk/raw/master/bin.lnx/${{ matrix.job.sciter_arch }}/libsciter-gtk.so
             ./build.py --package ./Release
 
       - name: Rename rustdesk
@@ -892,15 +895,21 @@ jobs:
           # install libarchive-tools for bsdtar command used in AppImageBuilder.yml
           sudo apt-get update -y
           sudo apt-get install -y libarchive-tools
+          sudo apt install -y binutils coreutils desktop-file-utils fakeroot fuse libgdk-pixbuf2.0-dev patchelf python3-pip python3-setuptools squashfs-tools strace util-linux zsync
           # set-up appimage-builder
-          pushd /tmp
-          wget -O appimage-builder-x86_64.AppImage https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.1.0/appimage-builder-1.1.0-x86_64.AppImage
-          chmod +x appimage-builder-x86_64.AppImage
-          sudo mv appimage-builder-x86_64.AppImage /usr/local/bin/appimage-builder
-          popd
+          #pushd /tmp
+          #wget -O appimage-builder-x86_64.AppImage https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.1.0/appimage-builder-1.1.0-x86_64.AppImage
+          #chmod +x appimage-builder-x86_64.AppImage
+          #sudo mv appimage-builder-x86_64.AppImage /usr/local/bin/appimage-builder
+          #popd
+          sudo pip3 install testresources
+          sudo pip3 install requests -U
+          sudo pip3 install urllib3 -U
+          sudo pip3 install git+https://github.com/AppImageCrafters/appimage-builder.git@f38699ef3644fa5409a5a262b7b6d99d6fb85db9
           # run appimage-builder
           pushd appimage
           sudo appimage-builder --skip-tests --recipe ./AppImageBuilder-${{ matrix.job.arch }}.yml
+        continue-on-error: true
 
       - name: Build appimage package (Sciter)
         if: matrix.job.type == 'sciter'
@@ -909,16 +918,25 @@ jobs:
           # install libarchive-tools for bsdtar command used in AppImageBuilder.yml
           sudo apt-get update -y
           sudo apt-get install -y libarchive-tools
+          sudo apt install -y binutils coreutils desktop-file-utils fakeroot fuse libgdk-pixbuf2.0-dev patchelf python3-pip python3-setuptools squashfs-tools strace util-linux zsync
           # set-up appimage-builder
-          pushd /tmp
-          wget -O appimage-builder-x86_64.AppImage https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.1.0/appimage-builder-1.1.0-x86_64.AppImage
-          chmod +x appimage-builder-x86_64.AppImage
-          sudo mv appimage-builder-x86_64.AppImage /usr/local/bin/appimage-builder
-          popd
+          #pushd /tmp
+          #wget -O appimage-builder-x86_64.AppImage https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.1.0/appimage-builder-1.1.0-x86_64.AppImage
+          #chmod +x appimage-builder-x86_64.AppImage
+          #sudo mv appimage-builder-x86_64.AppImage /usr/local/bin/appimage-builder
+          #popd
+          sudo pip3 install testresources
+          sudo pip3 install requests -U
+          sudo pip3 install urllib3 -U
+          sudo pip3 install git+https://github.com/AppImageCrafters/appimage-builder.git@f38699ef3644fa5409a5a262b7b6d99d6fb85db9
           # run appimage-builder
           pushd appimage
           sudo appimage-builder --skip-tests --recipe ./AppImageBuilder-${{ matrix.job.arch }}.yml
-          mv ./appimage/cscpassist-${{ env.VERSION }}-${{ matrix.job.arch }}.AppImage ./appimage/cscpassist-${{ env.VERSION }}-${{ matrix.job.arch }}-sciter.AppImage
+          sudo mv ./cscpassist-${{ env.VERSION }}-${{ matrix.job.arch }}.AppImage ./cscpassist-${{ env.VERSION }}-${{ matrix.job.arch }}-sciter.AppImage
+        continue-on-error: true
+
+      - name: Setup Debug Session
+        uses: csexton/debugger-action@master
 
       - name: Upload AppImage
         if: env.UPLOAD_ARTIFACT == 'true' && matrix.job.type != 'sciter'
@@ -931,5 +949,5 @@ jobs:
         if: env.UPLOAD_ARTIFACT == 'true' && matrix.job.type == 'sciter'
         uses: actions/upload-artifact@master
         with:
-          name: rustdesk-unsigned-linux-APPIMAGE-${{ matrix.job.arch }}
+          name: rustdesk-unsigned-linux-APPIMAGE-${{ matrix.job.arch }}-sciter
           path: ./appimage/cscpassist-${{ env.VERSION }}-${{ matrix.job.arch }}-sciter.AppImage

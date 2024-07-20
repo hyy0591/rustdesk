@@ -63,10 +63,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   free_c_args(c_args, args_len);
 
   std::wstring app_name = L"CscpAssist";
-  FUNC_RUSTDESK_GET_APP_NAME get_rustdesk_app_name = (FUNC_RUSTDESK_GET_APP_NAME)GetProcAddress(hInstance, "get_rustdesk_app_name");
-  if (get_rustdesk_app_name) {
+  FUNC_RUSTDESK_GET_APP_NAME get_cscpassist_app_name = (FUNC_RUSTDESK_GET_APP_NAME)GetProcAddress(hInstance, "get_cscpassist_app_name");
+  if (get_cscpassist_app_name) {
     wchar_t app_name_buffer[512] = {0};
-    if (get_rustdesk_app_name(app_name_buffer, 512) == 0) {
+    if (get_cscpassist_app_name(app_name_buffer, 512) == 0) {
       app_name = std::wstring(app_name_buffer);
     }
   }

@@ -48,15 +48,7 @@ def get_version():
 
 
 def parse_rc_features(feature):
-    available_features = {
-        'PrivacyMode': {
-            'platform': ['windows'],
-            'zip_url': 'https://github.com/fufesou/RustDeskTempTopMostWindow/releases/download/v0.3'
-                       '/TempTopMostWindow_x64.zip',
-            'checksum_url': 'https://github.com/fufesou/RustDeskTempTopMostWindow/releases/download/v0.3/checksum_md5',
-            'include': ['WindowInjection.dll'],
-        }
-    }
+    available_features = {}
     apply_features = {}
     if not feature:
         feature = []
@@ -108,7 +100,7 @@ def make_parser():
         nargs='+',
         default='',
         help='Integrate features, windows only.'
-             'Available: PrivacyMode. Special value is "ALL" and empty "". Default is empty.')
+             'Available: [Not used for now]. Special value is "ALL" and empty "". Default is empty.')
     parser.add_argument('--flutter', action='store_true',
                         help='Build flutter package', default=False)
     parser.add_argument(
