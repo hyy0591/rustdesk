@@ -44,6 +44,7 @@ jobs:
     uses: ./.github/workflows/bridge.yml
 
   build-rustdesk-linux:
+    if: false
     needs: [generate-bridge-linux]
     name: build rustdesk linux ${{ matrix.job.target }} 
     runs-on: ${{ matrix.job.on }}
@@ -329,7 +330,7 @@ jobs:
           path: rustdesk-${{ env.VERSION }}-${{ matrix.job.arch }}.deb
 
   build-rustdesk-linux-sciter:
-    if: false #${{ inputs.upload-artifact }}
+    if: ${{ inputs.upload-artifact }}
     #needs: build-rustdesk-linux # not for dep, just make it run later for parallelism
     runs-on: ubuntu-20.04
     name: build-rustdesk-sciter-${{ matrix.job.target }}
@@ -338,20 +339,20 @@ jobs:
       matrix:
         # use a high level qemu-user-static
         job:
-          - {
-              arch: x86_64,
-              target: x86_64-unknown-linux-gnu,
-              deb_arch: amd64,
-              vcpkg-triplet: x64-linux,
-              use-cross: false
-            }
           #- {
-          #    arch: aarch64,
-          #    target: aarch64-unknown-linux-gnu,
-          #    deb_arch: arm64,
-          #    vcpkg-triplet: arm64-linux,
-          #    use-cross: true
+          #    arch: x86_64,
+          #    target: x86_64-unknown-linux-gnu,
+          #    deb_arch: amd64,
+          #    vcpkg-triplet: x64-linux,
+          #    use-cross: false
           #  }
+          - {
+              arch: aarch64,
+              target: aarch64-unknown-linux-gnu,
+              deb_arch: arm64,
+              vcpkg-triplet: arm64-linux,
+              use-cross: true
+            }
     steps:
       - name: Export GitHub Actions cache environment variables
         uses: actions/github-script@v6
@@ -434,7 +435,7 @@ jobs:
         id: vcpkg
         with:
           arch: ${{ matrix.job.arch }}
-          distro: ubuntu18.04-rustdesk
+          distro: ubuntu20.04
           githubToken: ${{ github.token }}
           setup: |
             ls -l "${PWD}"
@@ -543,11 +544,11 @@ jobs:
       fail-fast: false
       matrix:
         job:
-          - {
-              target: x86_64-unknown-linux-gnu,
-              arch: x86_64,
-              type: flutter
-            }
+          #- {
+          #    target: x86_64-unknown-linux-gnu,
+          #    arch: x86_64,
+          #    type: flutter
+          #  }
           #- {
           #    target: aarch64-unknown-linux-gnu,
           #    arch: aarch64,
@@ -558,11 +559,11 @@ jobs:
           #    arch: x86_64,
           #    type: sciter
           #  }
-          #- {
-          #    target: aarch64-unknown-linux-gnu,
-          #    arch: aarch64,
-          #    type: sciter
-          #  }
+          - {
+              target: aarch64-unknown-linux-gnu,
+              arch: aarch64,
+              type: sciter
+            }
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
@@ -615,7 +616,31 @@ jobs:
         continue-on-error: true
 
       - name: Build appimage package (Sciter)
-        if: matrix.job.type == 'sciter'
+        if: matrix.job.type == 'sciter' && matrix.job.arch != 'aarch64'
+        shell: bash
+        run: |
+          # install libarchive-tools for bsdtar command used in AppImageBuilder.yml
+          sudo apt-get update -y
+          sudo apt-get install -y libarchive-tools
+          sudo apt install -y binutils coreutils desktop-file-utils fakeroot fuse libgdk-pixbuf2.0-dev patchelf python3-pip python3-setuptools squashfs-tools strace util-linux zsync
+          # set-up appimage-builder
+          #pushd /tmp
+          #wget -O appimage-builder-x86_64.AppImage https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.1.0/appimage-builder-1.1.0-x86_64.AppImage
+          #chmod +x appimage-builder-x86_64.AppImage
+          #sudo mv appimage-builder-x86_64.AppImage /usr/local/bin/appimage-builder
+          #popd
+          sudo pip3 install testresources
+          sudo pip3 install requests -U
+          sudo pip3 install urllib3 -U
+          sudo pip3 install git+https://github.com/AppImageCrafters/appimage-builder.git@f38699ef3644fa5409a5a262b7b6d99d6fb85db9
+          # run appimage-builder
+          pushd appimage
+          sudo appimage-builder --skip-tests --recipe ./AppImageBuilder-${{ matrix.job.arch }}-sciter.yml
+          sudo mv ./cscpassist-${{ env.VERSION }}-${{ matrix.job.arch }}.AppImage ./cscpassist-${{ env.VERSION }}-${{ matrix.job.arch }}-sciter.AppImage
+        #continue-on-error: true
+
+      - name: Build appimage package (Sciter aarch64)
+        if: matrix.job.type == 'sciter' && matrix.job.arch == 'aarch64'
         shell: bash
         run: |
           # install libarchive-tools for bsdtar command used in AppImageBuilder.yml
