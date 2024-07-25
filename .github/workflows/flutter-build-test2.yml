@@ -636,7 +636,7 @@ jobs:
           sudo pip3 install git+https://github.com/AppImageCrafters/appimage-builder.git@f38699ef3644fa5409a5a262b7b6d99d6fb85db9
           # run appimage-builder
           pushd appimage
-          sudo appimage-builder --skip-tests --recipe ./AppImageBuilder-${{ matrix.job.arch }}-sciter.yml
+          sudo appimage-builder --skip-tests --recipe ./AppImageBuilder-${{ matrix.job.arch }}.yml
           sudo mv ./cscpassist-${{ env.VERSION }}-${{ matrix.job.arch }}.AppImage ./cscpassist-${{ env.VERSION }}-${{ matrix.job.arch }}-sciter.AppImage
         #continue-on-error: true
 
@@ -660,7 +660,7 @@ jobs:
           sudo pip3 install git+https://github.com/AppImageCrafters/appimage-builder.git@f38699ef3644fa5409a5a262b7b6d99d6fb85db9
           # run appimage-builder
           pushd appimage
-          sudo appimage-builder --skip-tests --recipe ./AppImageBuilder-${{ matrix.job.arch }}.yml
+          sudo appimage-builder --skip-tests --recipe ./AppImageBuilder-${{ matrix.job.arch }}-sciter.yml
           sudo mv ./cscpassist-${{ env.VERSION }}-${{ matrix.job.arch }}.AppImage ./cscpassist-${{ env.VERSION }}-${{ matrix.job.arch }}-sciter.AppImage
         #continue-on-error: true
 
