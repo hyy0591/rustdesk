@@ -332,7 +332,7 @@ jobs:
   build-rustdesk-linux-sciter:
     if: ${{ inputs.upload-artifact }}
     #needs: build-rustdesk-linux # not for dep, just make it run later for parallelism
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     name: build-rustdesk-sciter-${{ matrix.job.target }}
     strategy:
       fail-fast: false
@@ -435,7 +435,7 @@ jobs:
         id: vcpkg
         with:
           arch: ${{ matrix.job.arch }}
-          distro: ubuntu20.04
+          distro: ubuntu22.04
           githubToken: ${{ github.token }}
           setup: |
             ls -l "${PWD}"
@@ -516,7 +516,8 @@ jobs:
             # package
             mkdir -p ./Release
             mv ./target/release/cscpassist ./Release/cscpassist
-            wget -O ./Release/libsciter-gtk.so https://github.com/c-smile/sciter-sdk/raw/master/bin.lnx/arm64/libsciter-gtk.so
+            #wget -O ./Release/libsciter-gtk.so https://github.com/c-smile/sciter-sdk/raw/master/bin.lnx/arm64/libsciter-gtk.so
+            wget -O ./Release/libsciter-gtk.so https://gitlab.com/sciter-engine/sciter-js-sdk/-/blob/5caf429a1578d541f6dadc787f8014d1c2ebe71a/bin/linux/arm64/libsciter-gtk.so
             ./build.py --package ./Release
 
       - name: Rename rustdesk
@@ -539,7 +540,7 @@ jobs:
     #needs: [build-rustdesk-linux, build-rustdesk-linux-sciter]
     #needs: [build-rustdesk-linux]
     needs: [build-rustdesk-linux-sciter]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: ${{ inputs.upload-artifact }}
     strategy:
       fail-fast: false

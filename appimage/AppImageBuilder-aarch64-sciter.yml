@@ -30,17 +30,17 @@ AppDir:
     - arm64
     allow_unauthenticated: true
     sources:
-    - sourceline: deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ focal main restricted universe multiverse
+    - sourceline: deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ jammy main restricted universe multiverse
       key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3b4fe6acc0b21f32'
-    #- sourceline: deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ focal-updates main restricted universe multiverse
+    #- sourceline: deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ jammy-updates main restricted universe multiverse
     #  key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3b4fe6acc0b21f32'
-    #- sourceline: deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ focal-backports main restricted
+    #- sourceline: deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ jammy-backports main restricted
     #    universe multiverse
     #  key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3b4fe6acc0b21f32'
-    #- sourceline: deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ focal-security main restricted
+    #- sourceline: deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ jammy-security main restricted
     #    universe multiverse
     #  key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3b4fe6acc0b21f32'
-    - sourceline: deb [arch=arm64] http://ppa.launchpad.net/pipewire-debian/pipewire-upstream/ubuntu focal main
+    - sourceline: deb [arch=arm64] http://ppa.launchpad.net/pipewire-debian/pipewire-upstream/ubuntu jammy main
       key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x25088a0359807596'
     include:
     - libc6:arm64
@@ -83,7 +83,7 @@ AppDir:
     env:
       GIO_MODULE_DIR: /lib64/gio/modules:/usr/lib/aarch64-linux-gnu/gio/modules:$APPDIR/usr/lib/aarch64-linux-gnu/gio/modules
       GDK_BACKEND: x11
-      APPDIR_LIBRARY_PATH: $APPDIR/usr/lib/aarch64-linux-gnu/gdk-pixbuf-2.0:/lib64:/usr/lib/aarch64-linux-gnu:$APPDIR/lib/aarch64-linux-gnu:$APPDIR/lib/aarch64-linux-gnu/security:$APPDIR/lib/systemd:$APPDIR/usr/lib/aarch64-linux-gnu:$APPDIR/usr/lib/aarch64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders:$APPDIR/usr/lib/aarch64-linux-gnu/gstreamer-1.0:$APPDIR/usr/lib/aarch64-linux-gnu/gtk-3.0/3.0.0/immodules:$APPDIR/usr/lib/aarch64-linux-gnu/gtk-3.0/3.0.0/printbackends:$APPDIR/usr/lib/aarch64-linux-gnu/krb5/plugins/preauth:$APPDIR/usr/lib/aarch64-linux-gnu/libcanberra-0.30:$APPDIR/usr/lib/aarch64-linux-gnu/pulseaudio:$APPDIR/usr/lib/aarch64-linux-gnu/sasl2:$APPDIR/usr/lib/aarch64-linux-gnu/vdpau:$APPDIR/usr/lib/cscpassist/lib:$APPDIR/lib/aarch64
+      APPDIR_LIBRARY_PATH: $APPDIR/runtime/compat/lib/aarch64-linux-gnu:$APPDIR/usr/lib/aarch64-linux-gnu/gdk-pixbuf-2.0:/lib64:/usr/lib/aarch64-linux-gnu:$APPDIR/lib/aarch64-linux-gnu:$APPDIR/lib/aarch64-linux-gnu/security:$APPDIR/lib/systemd:$APPDIR/usr/lib/aarch64-linux-gnu:$APPDIR/usr/lib/aarch64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders:$APPDIR/usr/lib/aarch64-linux-gnu/gstreamer-1.0:$APPDIR/usr/lib/aarch64-linux-gnu/gtk-3.0/3.0.0/immodules:$APPDIR/usr/lib/aarch64-linux-gnu/gtk-3.0/3.0.0/printbackends:$APPDIR/usr/lib/aarch64-linux-gnu/krb5/plugins/preauth:$APPDIR/usr/lib/aarch64-linux-gnu/libcanberra-0.30:$APPDIR/usr/lib/aarch64-linux-gnu/pulseaudio:$APPDIR/usr/lib/aarch64-linux-gnu/sasl2:$APPDIR/usr/lib/aarch64-linux-gnu/vdpau:$APPDIR/usr/lib/cscpassist/lib:$APPDIR/lib/aarch64
       GST_PLUGIN_PATH: /lib64/gstreamer-1.0:/usr/lib/aarch64-linux-gnu/gstreamer-1.0:$APPDIR/usr/lib/aarch64-linux-gnu/gstreamer-1.0
       GST_PLUGIN_SYSTEM_PATH: /lib64/gstreamer-1.0:/usr/lib/aarch64-linux-gnu/gstreamer-1.0:$APPDIR/usr/lib/aarch64-linux-gnu/gstreamer-1.0
   test:
