@@ -3,7 +3,8 @@ version: 1
 script:
  - rm -rf ./AppDir || true
  - bsdtar -zxvf rustdesk.deb
- - tar -xvf ./data.tar.xz
+ #- tar -xvf ./data.tar.xz
+ - tar -xvf ./data.tar.zst
  - mkdir ./AppDir
  - mv ./usr ./AppDir/usr
  # 32x32 icon
